@@ -16,8 +16,6 @@ package object common {
 
     def /(i: PositiveLong): BigDecimal =
       BigDecimal(raw) / BigDecimal(i.raw)
-
-    def compare(t: PositiveLong): Int = raw.value compare t.raw.value
   }
   object PositiveLong {
     def ONE: PositiveLong =

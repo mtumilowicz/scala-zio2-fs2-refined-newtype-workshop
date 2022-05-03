@@ -3,12 +3,12 @@ package app.domain
 import app.domain.common.NewtypeRefinedOps._
 import app.domain.common.PositiveLong
 import cats.data.{NonEmptyChain, ValidatedNec}
+import cats.implicits._
 import eu.timepit.refined._
 import eu.timepit.refined.api.{Refined, RefinedTypeOps}
 import eu.timepit.refined.numeric.Interval
-import io.estatico.newtype.macros.newtype
-import cats.implicits._
 import eu.timepit.refined.string.MatchesRegex
+import io.estatico.newtype.macros.newtype
 
 import scala.util.{Failure, Success, Try}
 
@@ -68,7 +68,7 @@ package object purchase {
   @newtype case class ShopId(raw: ShopIdR)
 
   object ShopId {
-    def apply(shopId: String): ValidatedNec[String, ShopId] =
+    def make(shopId: String): ValidatedNec[String, ShopId] =
       validate[ShopId](shopId)
         .leftMap(_ => NonEmptyChain("ShopId: should start with a letter and contain only digits or letters!"))
 
