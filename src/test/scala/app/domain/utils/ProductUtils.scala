@@ -1,18 +1,10 @@
 package app.domain.utils
 
-import app.domain.purchase.{ProductId, ProductRating, Rating}
-import cats.data.Validated
-import cats.implicits.catsSyntaxTuple2Semigroupal
+import app.domain.purchase._
 
 object ProductUtils {
 
-  def createProductRating(productId: String, rating: String): ProductRating =
-    (
-      ProductId.make(productId),
-      Rating.make(rating)
-      ).mapN(ProductRating) match {
-      case Validated.Valid(a) => a
-      case Validated.Invalid(e) => throw new IllegalStateException(e.toString)
-    }
+  def createProductRating(productId: ProductIdR, rating: RatingR): ProductRating =
+    ProductRating(productId = ProductId(productId), rating = Rating(rating))
 
 }

@@ -1,8 +1,11 @@
 package app.domain.stats
 
+import app.domain.common.PositiveLong
+import app.domain.purchase.ProductId
 import app.domain.stats.ProductStatisticsOrdering._
 import app.domain.utils.ProductUtils
 import app.infrastructure.ProductStatisticsConfig
+import eu.timepit.refined.auto._
 import zio.Scope
 import zio.test.Assertion.{equalTo, hasSize, isEmpty}
 import zio.test.{TestEnvironment, ZIOSpecDefault, ZSpec, assert}
@@ -25,7 +28,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       service <- ProductStatisticsConfig.inMemoryService
 
       //      And("ratings")
-      productRating = ProductUtils.createProductRating("product1-11", "1")
+      productRating = ProductUtils.createProductRating("product1-11", 1L)
       expectedOutput = ProductStatistics(productRating.productId, Statistics.init(productRating.rating))
 
       //      And("add single entry")
@@ -44,9 +47,9 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       service <- ProductStatisticsConfig.inMemoryService
 
       //      And("ratings")
-      productRating1 = ProductUtils.createProductRating("product1-11", "1")
-      productRating2 = ProductUtils.createProductRating("product2-11", "2")
-      productRating3 = ProductUtils.createProductRating("product3-11", "3")
+      productRating1 = ProductUtils.createProductRating("product1-11", 1L)
+      productRating2 = ProductUtils.createProductRating("product2-11", 2L)
+      productRating3 = ProductUtils.createProductRating("product3-11", 3L)
 
       //      And("expected output")
       product1Stats = ProductStatistics(productRating1.productId, Statistics.init(productRating1.rating))
@@ -70,10 +73,10 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       service <- ProductStatisticsConfig.inMemoryService
 
       //      And("ratings")
-      productRating1 = ProductUtils.createProductRating("product1-11", "1")
-      productRating2 = ProductUtils.createProductRating("product1-11", "1")
-      productRating3 = ProductUtils.createProductRating("product1-11", "1")
-      productRating4 = ProductUtils.createProductRating("product2-11", "2")
+      productRating1 = ProductUtils.createProductRating("product1-11", 1L)
+      productRating2 = ProductUtils.createProductRating("product1-11", 1L)
+      productRating3 = ProductUtils.createProductRating("product1-11", 1L)
+      productRating4 = ProductUtils.createProductRating("product2-11", 2L)
 
       //      And("add entries")
       _ <- service.index(productRating1)
@@ -88,10 +91,10 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       top1 = stats.head
       top2 = stats(1)
     } yield assert(stats)(hasSize(equalTo(2))) &&
-      assert(top1.productId.raw.value)(equalTo("product1-11")) &&
-      assert(top1.statistics.howManyRated.raw.value)(equalTo(3L)) &&
-      assert(top2.productId.raw.value)(equalTo("product2-11")) &&
-      assert(top2.statistics.howManyRated.raw.value)(equalTo(1L))
+      assert(top1.productId)(equalTo(ProductId("product1-11"))) &&
+      assert(top1.statistics.howManyRated)(equalTo(PositiveLong(3L))) &&
+      assert(top2.productId)(equalTo(ProductId("product2-11"))) &&
+      assert(top2.statistics.howManyRated)(equalTo(PositiveLong(1L)))
   }
 
   val productStatisticsSuite = suite("Find top n entries given specific ordering")(

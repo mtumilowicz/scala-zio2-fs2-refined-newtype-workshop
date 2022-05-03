@@ -3,7 +3,6 @@ package app.domain.stats
 import app.domain.common.PositiveLong
 import app.domain.purchase.Rating
 import eu.timepit.refined.api.Refined
-import eu.timepit.refined.auto._
 
 case class Statistics(howManyRated: PositiveLong, sumOfRates: PositiveLong) {
 

@@ -1,7 +1,9 @@
 package app.gateway.in
 
+import app.domain.purchase.{BuyerId, ProductId, Rating, ShopId}
 import cats.data.Chain
 import cats.implicits._
+import eu.timepit.refined.auto._
 import org.scalatest.GivenWhenThen
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -117,10 +119,10 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
 
       Then("verify that purchase was created correctly")
       val purchase = validated.getOrElse(null)
-      purchase.buyerId.raw.value shouldBe "buyer1"
-      purchase.shopId.raw.value shouldBe "veloshop"
-      purchase.productId.raw.value shouldBe "chain-01"
-      purchase.rating.raw.value shouldBe 4
+      purchase.buyerId shouldBe BuyerId("buyer1")
+      purchase.shopId shouldBe ShopId("veloshop")
+      purchase.productId shouldBe ProductId("chain-01")
+      purchase.rating shouldBe Rating(4L)
     }
 
   }
