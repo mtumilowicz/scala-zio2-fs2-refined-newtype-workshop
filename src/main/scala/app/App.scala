@@ -12,7 +12,9 @@ object App extends ZIOAppDefault {
 
   override def run: ZIO[ZIOAppArgs, Any, Any] = for {
     environment <- prepareEnvironment()
-    result <- program(Path("src/main/resources/file.csv")).provideEnvironment(environment)
+    args <- ZIO.service[ZIOAppArgs].map(_.getArgs)
+    path = Path(args.headOption.getOrElse("src/main/resources/file.csv"))
+    result <- program(path).provideEnvironment(environment)
     _ <- Console.printLine(result.toString)
   } yield ExitCode.success
 
