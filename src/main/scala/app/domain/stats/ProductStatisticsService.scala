@@ -11,4 +11,13 @@ class ProductStatisticsService(repository: ProductStatisticsRepository) {
 
   def findTop(top: Int, ordering: Ordering[ProductStatistics]): UIO[List[ProductStatistics]] =
     repository.findTop(top, ordering)
+
+  def findTail(top: Int, ordering: Ordering[ProductStatistics]): UIO[List[ProductStatistics]] =
+    repository.findTop(top, ordering.reverse)
+
+  def findMax(ordering: Ordering[ProductStatistics]): UIO[Option[ProductStatistics]] =
+    repository.findMax(ordering)
+
+  def findMin(ordering: Ordering[ProductStatistics]): UIO[Option[ProductStatistics]] =
+    repository.findMax(ordering.reverse)
 }

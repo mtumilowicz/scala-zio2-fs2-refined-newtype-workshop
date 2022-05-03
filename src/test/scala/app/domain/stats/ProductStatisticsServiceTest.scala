@@ -35,7 +35,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       _ <- service.index(productRating)
 
       //      When("get top5")
-      stats <- service.findTop(5, averageRateAsc_productIdAsc)
+      stats <- service.findTop(5, averageRateDesc_productIdAsc)
 
       //      Then("should return single result")
     } yield assert(stats)(equalTo(List(expectedOutput)))
@@ -52,7 +52,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       productRating3 = ProductUtils.createProductRating("product3-11", 3L)
 
       //      And("expected output")
-      product1Stats = ProductStatistics(productRating1.productId, Statistics.init(productRating1.rating))
+      product3Stats = ProductStatistics(productRating3.productId, Statistics.init(productRating3.rating))
       product2Stats = ProductStatistics(productRating2.productId, Statistics.init(productRating2.rating))
 
       //      And("add entries")
@@ -61,10 +61,10 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       _ <- service.index(productRating3)
 
       //      When("get top2")
-      stats <- service.findTop(2, howManyRatedAsc_productIdAsc)
+      stats <- service.findTop(2, howManyRatedDesc_productIdAsc)
 
       //      Then("should return sorted by name")
-    } yield assert(stats)(equalTo(List(product1Stats, product2Stats)))
+    } yield assert(stats)(equalTo(List(product2Stats, product3Stats)))
   }
 
   val top3HowManyRankedTest = test("find top3 ordered by howManyRanked desc") {
@@ -88,8 +88,8 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       stats <- service.findTop(3, howManyRatedDesc_productIdAsc)
 
       //      Then("two stats returned")
-      top1 = stats.head
-      top2 = stats(1)
+      top1 = stats(1)
+      top2 = stats(0)
     } yield assert(stats)(hasSize(equalTo(2))) &&
       assert(top1.productId)(equalTo(ProductId("product1-11"))) &&
       assert(top1.statistics.howManyRated)(equalTo(PositiveLong(3L))) &&

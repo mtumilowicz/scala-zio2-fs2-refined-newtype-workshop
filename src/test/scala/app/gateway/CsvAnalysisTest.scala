@@ -38,7 +38,7 @@ object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
     } yield assert(analysis.validLines)(equalTo(49)) &&
       assert(analysis.invalidLine)(equalTo(6)) &&
       assert(analysis.bestRatedProducts)(equalTo(List("blu-ray-01", "fixie-01", "widetv-03"))) &&
-      assert(analysis.worstRatedProducts)(equalTo(List("endura-01", "smarttv-01", "patagonia-01"))) &&
+      assert(analysis.worstRatedProducts)(equalTo(List("patagonia-01", "smarttv-01", "endura-01"))) &&
       assert(analysis.lessRatedProduct)(equalTo("saddle-01")) &&
       assert(analysis.mostRatedProduct)(equalTo("wifi-projector-01"))
   }

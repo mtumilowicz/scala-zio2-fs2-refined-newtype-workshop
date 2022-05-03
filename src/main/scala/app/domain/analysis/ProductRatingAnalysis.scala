@@ -1,8 +1,10 @@
 package app.domain.analysis
 
+import app.domain.purchase.ProductId
+
 case class ProductRatingAnalysis(
                                   bestRatedProducts: BestRatedProducts,
                                   worstRatedProducts: WorstRatedProducts,
-                                  mostRatedProduct: MostRatedProduct,
-                                  lessRatedProduct: LessRatedProduct
+                                  mostRatedProduct: Option[ProductId],
+                                  lessRatedProduct: Option[ProductId]
                                 )

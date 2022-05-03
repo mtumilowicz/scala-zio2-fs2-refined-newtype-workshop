@@ -1,6 +1,6 @@
 package app.domain.analysis
 
-import app.domain.purchase.ProductRating
+import app.domain.purchase.{ProductId, ProductRating}
 import app.domain.stats.ProductStatisticsOrdering._
 import app.domain.stats.ProductStatisticsService
 import zio.UIO
@@ -27,14 +27,14 @@ class ProductAnalysisService(statsService: ProductStatisticsService) {
   } yield BestRatedProducts(top)
 
   private def findWorstRatedProducts(): UIO[WorstRatedProducts] = for {
-    top <- statsService.findTop(3, averageRateAsc_productIdAsc).map(_.map(_.productId))
+    top <- statsService.findTail(3, averageRateDesc_productIdAsc).map(_.map(_.productId))
   } yield WorstRatedProducts(top)
 
-  private def findMostRatedProduct(): UIO[MostRatedProduct] = for {
-    top <- statsService.findTop(1, howManyRatedDesc_productIdAsc).map(_.map(_.productId))
-  } yield MostRatedProduct(top.headOption)
+  private def findMostRatedProduct(): UIO[Option[ProductId]] =
+    statsService.findMax(howManyRatedDesc_productIdAsc)
+      .map(_.map(_.productId))
 
-  private def findLessRatedProduct(): UIO[LessRatedProduct] = for {
-    top <- statsService.findTop(1, howManyRatedAsc_productIdAsc).map(_.map(_.productId))
-  } yield LessRatedProduct(top.headOption)
+  private def findLessRatedProduct(): UIO[Option[ProductId]] =
+    statsService.findMin(howManyRatedDesc_productIdAsc)
+      .map(_.map(_.productId))
 }

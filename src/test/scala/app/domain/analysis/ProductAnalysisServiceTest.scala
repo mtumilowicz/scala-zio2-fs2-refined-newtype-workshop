@@ -21,8 +21,8 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
       //    Then("empty object")
     } yield assert(result.bestRatedProducts.raw)(isEmpty) &&
       assert(result.worstRatedProducts.raw)(isEmpty) &&
-      assert(result.mostRatedProduct.raw)(isNone) &&
-      assert(result.lessRatedProduct.raw)(isNone)
+      assert(result.mostRatedProduct)(isNone) &&
+      assert(result.lessRatedProduct)(isNone)
   }
 
   val nonEmptyDbTest = test("analysing full-packed db should result in correct object") {
@@ -61,22 +61,12 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
       //    Then("correct result")
       bestRatedProducts = result.bestRatedProducts.raw
       worstRatedProducts = result.worstRatedProducts.raw
-      mostRatedProduct = result.mostRatedProduct.raw
-      lessRatedProduct = result.lessRatedProduct.raw
+      mostRatedProduct = result.mostRatedProduct
+      lessRatedProduct = result.lessRatedProduct
     } yield
-      //      And("best rated products")
-      assert(bestRatedProducts)(hasSize(equalTo(3))) &&
-        assert(bestRatedProducts(0))(equalTo(ProductId("product3-01"))) &&
-        assert(bestRatedProducts(1))(equalTo(ProductId("product4-01"))) &&
-        assert(bestRatedProducts(2))(equalTo(ProductId("product2-01"))) &&
-        //        And("worst rated products")
-        assert(worstRatedProducts)(hasSize(equalTo(3))) &&
-        assert(worstRatedProducts(0))(equalTo(ProductId("product1-01"))) &&
-        assert(worstRatedProducts(1))(equalTo(ProductId("product2-01"))) &&
-        assert(worstRatedProducts(2))(equalTo(ProductId("product4-01"))) &&
-        //        And("most rated product")
+      assert(bestRatedProducts)(equalTo(List(ProductId("product2-01"), ProductId("product4-01"), ProductId("product3-01")))) &&
+        assert(worstRatedProducts)(equalTo(List(ProductId("product4-01"), ProductId("product2-01"), ProductId("product1-01")))) &&
         assert(mostRatedProduct)(isSome(equalTo(ProductId("product1-01")))) &&
-        //        And("less rated product")
         assert(lessRatedProduct)(isSome(equalTo(ProductId("product2-01"))))
 
   }
