@@ -22,6 +22,15 @@ package object purchase {
       PositiveLong(Refined.unsafeApply(raw.value))
   }
 
+  object Rating {
+    def make(rating: String): ValidatedNec[String, Rating] =
+      Try(rating.toLong) match {
+        case Failure(_) => "Rating: should be in range 1-5 inclusive".invalidNec
+        case Success(value) => validate[Rating](value)
+          .leftMap(_ => NonEmptyChain("Rating: should be in range 1-5 inclusive"))
+      }
+  }
+
   type ProductIdR = String Refined MatchesRegex["^[a-zA-Z][\\w-]+-\\d{2}$"]
 
   object ProductIdR extends RefinedTypeOps[ProductIdR, String]
@@ -40,12 +49,29 @@ package object purchase {
 
   }
 
-  object Rating {
-    def make(rating: String): ValidatedNec[String, Rating] =
-      Try(rating.toLong) match {
-        case Failure(_) => "Rating: should be in range 1-5 inclusive".invalidNec
-        case Success(value) => validate[Rating](value)
-          .leftMap(_ => NonEmptyChain("Rating: should be in range 1-5 inclusive"))
-      }
+  type BuyerIdR = String Refined MatchesRegex["^[a-zA-Z][a-zA-Z0-9_.-]*$"]
+
+  object BuyerIdR extends RefinedTypeOps[BuyerIdR, String]
+
+  @newtype case class BuyerId(raw: BuyerIdR)
+
+  object BuyerId {
+    def make(buyerId: String): ValidatedNec[String, BuyerId] =
+      validate[BuyerId](buyerId)
+        .leftMap(_ => NonEmptyChain("BuyerId: should start with a letter and contain only digits or letters!"))
   }
+
+  type ShopIdR = String Refined MatchesRegex["^[a-zA-Z][a-zA-Z0-9_.-]*$"]
+
+  object ShopIdR extends RefinedTypeOps[ShopIdR, String]
+
+  @newtype case class ShopId(raw: ShopIdR)
+
+  object ShopId {
+    def apply(shopId: String): ValidatedNec[String, ShopId] =
+      validate[ShopId](shopId)
+        .leftMap(_ => NonEmptyChain("ShopId: should start with a letter and contain only digits or letters!"))
+
+  }
+
 }

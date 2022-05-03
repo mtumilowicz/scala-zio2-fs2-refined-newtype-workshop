@@ -117,8 +117,8 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
 
       Then("verify that purchase was created correctly")
       val purchase = validated.getOrElse(null)
-      purchase.buyerId.raw shouldBe "buyer1"
-      purchase.shopId.raw shouldBe "veloshop"
+      purchase.buyerId.raw.value shouldBe "buyer1"
+      purchase.shopId.raw.value shouldBe "veloshop"
       purchase.productId.raw.value shouldBe "chain-01"
       purchase.rating.raw.value shouldBe 4
     }
