@@ -120,7 +120,7 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
       purchase.buyerId.raw shouldBe "buyer1"
       purchase.shopId.raw shouldBe "veloshop"
       purchase.productId.raw shouldBe "chain-01"
-      purchase.rating.raw.raw shouldBe 4
+      purchase.rating.raw.value shouldBe 4
     }
 
   }

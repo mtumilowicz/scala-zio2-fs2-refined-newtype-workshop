@@ -89,9 +89,9 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       top2 = stats(1)
     } yield assert(stats)(hasSize(equalTo(2))) &&
       assert(top1.productId.raw)(equalTo("product1-11")) &&
-      assert(top1.statistics.howManyRated.raw)(equalTo(3L)) &&
+      assert(top1.statistics.howManyRated.raw.value)(equalTo(3L)) &&
       assert(top2.productId.raw)(equalTo("product2-11")) &&
-      assert(top2.statistics.howManyRated.raw)(equalTo(1L))
+      assert(top2.statistics.howManyRated.raw.value)(equalTo(1L))
   }
 
   val productStatisticsSuite = suite("Find top n entries given specific ordering")(

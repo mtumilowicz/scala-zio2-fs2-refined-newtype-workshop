@@ -9,7 +9,7 @@ object ProductUtils {
   def createProductRating(productId: String, rating: String): ProductRating =
     (
       ProductId(productId),
-      Rating(rating)
+      Rating.make(rating)
       ).mapN(ProductRating) match {
       case Validated.Valid(a) => a
       case Validated.Invalid(e) => throw new IllegalStateException(e.toString)
