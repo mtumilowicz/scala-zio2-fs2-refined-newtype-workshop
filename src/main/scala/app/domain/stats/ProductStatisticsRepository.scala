@@ -5,11 +5,7 @@ import zio.UIO
 
 trait ProductStatisticsRepository {
 
-  def index(rate: ProductRating): Option[ProductStatistics]
+  def index(rate: ProductRating): UIO[Unit]
 
-  def findTop(top: Int, ordering: Ordering[ProductStatistics]): List[ProductStatistics]
-
-  def index2(rate: ProductRating): UIO[Unit]
-
-  def findTop2(top: Int, ordering: Ordering[ProductStatistics]): UIO[List[ProductStatistics]]
+  def findTop(top: Int, ordering: Ordering[ProductStatistics]): UIO[List[ProductStatistics]]
 }

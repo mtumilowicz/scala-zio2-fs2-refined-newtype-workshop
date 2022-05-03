@@ -1,2 +1,0 @@
-package app.domain.purchase
-
