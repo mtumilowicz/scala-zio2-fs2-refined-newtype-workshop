@@ -16,7 +16,7 @@ case class CsvLineApiInput(raw: String) {
   private def fromArray(array: Array[String]): ValidatedNec[String, Purchase] = (
     BuyerId(array(0)),
     ShopId(array(1)),
-    ProductId(array(2)),
+    ProductId.make(array(2)),
     Rating.make(array(3))
     ).mapN(Purchase)
 }

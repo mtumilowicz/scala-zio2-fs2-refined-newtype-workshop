@@ -16,9 +16,9 @@ object ProductRatingAnalysisApiOutput {
     ProductRatingAnalysisApiOutput(
       validLines = summary.validLines,
       invalidLine = summary.invalidLines,
-      bestRatedProducts = analysis.bestRatedProducts.raw.map(_.raw),
-      worstRatedProducts = analysis.worstRatedProducts.raw.map(_.raw),
-      mostRatedProduct = analysis.mostRatedProduct.raw.map(_.raw).orNull,
-      lessRatedProduct = analysis.lessRatedProduct.raw.map(_.raw).orNull
+      bestRatedProducts = analysis.bestRatedProducts.raw.map(_.raw.value),
+      worstRatedProducts = analysis.worstRatedProducts.raw.map(_.raw.value),
+      mostRatedProduct = analysis.mostRatedProduct.raw.map(_.raw.value).orNull,
+      lessRatedProduct = analysis.lessRatedProduct.raw.map(_.raw.value).orNull
     )
 }

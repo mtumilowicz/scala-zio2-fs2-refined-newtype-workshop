@@ -1,10 +1,12 @@
 package app.domain.analysis
 
+import app.domain.purchase.ProductId
 import app.domain.utils.ProductUtils
 import app.infrastructure.{ProductAnalysisConfig, ProductStatisticsConfig}
 import zio.Scope
 import zio.test.Assertion._
 import zio.test.{TestEnvironment, ZIOSpecDefault, ZSpec, assert}
+import eu.timepit.refined.auto._
 
 object ProductAnalysisServiceTest extends ZIOSpecDefault {
 
@@ -59,23 +61,23 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
       //    Then("correct result")
       bestRatedProducts = result.bestRatedProducts.raw
       worstRatedProducts = result.worstRatedProducts.raw
-      mostRatedProduct = result.mostRatedProduct.raw.map(_.raw)
-      lessRatedProduct = result.lessRatedProduct.raw.map(_.raw)
+      mostRatedProduct = result.mostRatedProduct.raw
+      lessRatedProduct = result.lessRatedProduct.raw
     } yield
       //      And("best rated products")
       assert(bestRatedProducts)(hasSize(equalTo(3))) &&
-        assert(bestRatedProducts(0).raw)(equalTo("product3-01")) &&
-        assert(bestRatedProducts(1).raw)(equalTo("product4-01")) &&
-        assert(bestRatedProducts(2).raw)(equalTo("product2-01")) &&
+        assert(bestRatedProducts(0).raw.value)(equalTo("product3-01")) &&
+        assert(bestRatedProducts(1).raw.value)(equalTo("product4-01")) &&
+        assert(bestRatedProducts(2).raw.value)(equalTo("product2-01")) &&
         //        And("worst rated products")
         assert(worstRatedProducts)(hasSize(equalTo(3))) &&
-        assert(worstRatedProducts(0).raw)(equalTo("product1-01")) &&
-        assert(worstRatedProducts(1).raw)(equalTo("product2-01")) &&
-        assert(worstRatedProducts(2).raw)(equalTo("product4-01")) &&
+        assert(worstRatedProducts(0).raw.value)(equalTo("product1-01")) &&
+        assert(worstRatedProducts(1).raw.value)(equalTo("product2-01")) &&
+        assert(worstRatedProducts(2).raw.value)(equalTo("product4-01")) &&
         //        And("most rated product")
-        assert(mostRatedProduct)(isSome(equalTo("product1-01"))) &&
+        assert(mostRatedProduct)(isSome(equalTo(ProductId("product1-01")))) &&
         //        And("less rated product")
-        assert(lessRatedProduct)(isSome(equalTo("product2-01")))
+        assert(lessRatedProduct)(isSome(equalTo(ProductId("product2-01"))))
 
   }
 
