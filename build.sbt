@@ -1,4 +1,4 @@
-name := "scala-zio2-fs2-workshop"
+name := "scala-zio2-fs2-refined-newtype-workshop"
 
 version := "0.1"
 
