@@ -9,7 +9,7 @@ import zio.test.{TestEnvironment, ZIOSpecDefault, ZSpec, assert}
 
 object ProductStatisticsServiceTest extends ZIOSpecDefault {
 
-  val t1 = test("when called with empty db, should return empty list") {
+  val emptyDbTest = test("when called with empty db, should return empty list") {
     for {
       //      Given("create empty stats")
       service <- ProductStatisticsConfig.inMemoryService
@@ -19,7 +19,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
     } yield assert(top)(isEmpty)
   }
 
-  val t2 = test("when called with db with single entry, should return single result") {
+  val singleEntryDbTest = test("when called with db with single entry, should return single result") {
     for {
       //      Given("create empty stats")
       service <- ProductStatisticsConfig.inMemoryService
@@ -38,7 +38,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
     } yield assert(stats)(equalTo(List(expectedOutput)))
   }
 
-  val t3 = test("should return stats sorted by product id in case of collisions") {
+  val collisionsTest = test("should return stats sorted by product id in case of collisions") {
     for {
       //      Given("create empty stats")
       service <- ProductStatisticsConfig.inMemoryService
@@ -64,7 +64,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
     } yield assert(stats)(equalTo(List(product1Stats, product2Stats)))
   }
 
-  val t4 = test("find top3 ordered by howManyRanked desc") {
+  val top3HowManyRankedTest = test("find top3 ordered by howManyRanked desc") {
     for {
       //      Given("create empty stats")
       service <- ProductStatisticsConfig.inMemoryService
@@ -94,12 +94,12 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       assert(top2.statistics.howManyRated.raw)(equalTo(1L))
   }
 
-  val s = suite("Find top n entries given specific ordering")(
-    t1,
-    t2,
-    t3,
-    t4
+  val productStatisticsSuite = suite("Find top n entries given specific ordering")(
+    emptyDbTest,
+    singleEntryDbTest,
+    collisionsTest,
+    top3HowManyRankedTest
   )
 
-  override def spec: ZSpec[TestEnvironment with Scope, Any] = s
+  override def spec: ZSpec[TestEnvironment with Scope, Any] = productStatisticsSuite
 }

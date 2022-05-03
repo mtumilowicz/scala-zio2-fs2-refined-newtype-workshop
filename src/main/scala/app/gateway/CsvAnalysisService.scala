@@ -1,23 +1,18 @@
 package app.gateway
 
 import app.domain.analysis.ProductAnalysisService
-import app.domain.purchase.{ProductRating, Purchase}
-import app.domain.stats.{ProductStatistics, ProductStatisticsService}
+import app.domain.purchase.Purchase
 import app.gateway.in.CsvLineApiInput
 import app.gateway.out.{ParsingSummary, ProductRatingAnalysisApiOutput}
 import cats.data.Validated.{Invalid, Valid}
-import cats.data.ValidatedNec
 import fs2.io.file.{Files, Path}
 import fs2.text
+import zio.Task
 import zio.interop.catz._
-import zio.{Console, IO, Task}
 
-import scala.io.Source
-import scala.util.{Try, Using}
+class CsvAnalysisService(analysisService: ProductAnalysisService) {
 
-class CsvAnalysis(analysisService: ProductAnalysisService) {
-
-  def calculate2(path: Path): Task[ProductRatingAnalysisApiOutput] = for {
+  def calculate(path: Path): Task[ProductRatingAnalysisApiOutput] = for {
     _ <- findAll(path)
       .map(_.toProductRating)
       .evalMap(analysisService.addToStatistics)

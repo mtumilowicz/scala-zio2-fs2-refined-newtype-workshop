@@ -8,7 +8,7 @@ import zio.test.{TestEnvironment, ZIOSpecDefault, ZSpec, assert}
 
 object ProductAnalysisServiceTest extends ZIOSpecDefault {
 
-  val t1 = test("analyzing empty db should result in empty object") {
+  val emptyDbTest = test("analyzing empty db should result in empty object") {
     for {
       //    Given("create empty")
       service <- ProductAnalysisConfig.inMemoryService
@@ -23,7 +23,7 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
       assert(result.lessRatedProduct.raw)(isNone)
   }
 
-  val t2 = test("analysing full-packed db should result in correct object") {
+  val nonEmptyDbTest = test("analysing full-packed db should result in correct object") {
     for {
       // Given("create empty")
       statsService <- ProductStatisticsConfig.inMemoryService
@@ -79,10 +79,10 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
 
   }
 
-  val s = suite("analyze product stats")(
-    t1,
-    t2,
+  val productAnalysisSuite = suite("analyze product stats")(
+    emptyDbTest,
+    nonEmptyDbTest,
   )
 
-  override def spec: ZSpec[TestEnvironment with Scope, Any] = s
+  override def spec: ZSpec[TestEnvironment with Scope, Any] = productAnalysisSuite
 }

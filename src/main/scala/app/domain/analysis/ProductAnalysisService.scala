@@ -1,11 +1,9 @@
 package app.domain.analysis
 
-import app.domain.analysis
 import app.domain.purchase.ProductRating
-import app.domain.stats.ProductStatisticsOrdering.{averageRateAsc_productIdAsc, _}
-import app.domain.stats.{ProductStatistics, ProductStatisticsService}
-import cats.data.ValidatedNec
-import zio.{UIO, ZIO}
+import app.domain.stats.ProductStatisticsOrdering._
+import app.domain.stats.ProductStatisticsService
+import zio.UIO
 
 class ProductAnalysisService(statsService: ProductStatisticsService) {
 

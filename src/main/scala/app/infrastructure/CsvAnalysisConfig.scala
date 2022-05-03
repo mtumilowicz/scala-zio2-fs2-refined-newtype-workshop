@@ -1,13 +1,13 @@
 package app.infrastructure
 
-import app.gateway.CsvAnalysis
+import app.gateway.CsvAnalysisService
 import zio.UIO
 
 object CsvAnalysisConfig {
 
-  def inMemoryAnalysis: UIO[CsvAnalysis] = for {
+  def inMemoryAnalysis: UIO[CsvAnalysisService] = for {
     statsService <- ProductStatisticsConfig.inMemoryService
     analysisService = ProductAnalysisConfig.service(statsService)
-  } yield new CsvAnalysis(analysisService = analysisService)
+  } yield new CsvAnalysisService(analysisService = analysisService)
 
 }

@@ -2,7 +2,7 @@ package app.infrastructure
 
 import app.domain.purchase.{ProductId, ProductRating}
 import app.domain.stats.{ProductStatistics, ProductStatisticsRepository}
-import zio.{Ref, UIO, URIO}
+import zio.{Ref, UIO}
 
 import scala.collection.mutable
 

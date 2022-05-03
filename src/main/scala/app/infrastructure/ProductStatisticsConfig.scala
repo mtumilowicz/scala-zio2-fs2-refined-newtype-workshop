@@ -1,8 +1,8 @@
 package app.infrastructure
 
 import app.domain.purchase.ProductId
-import app.domain.stats.{ProductStatistics, ProductStatisticsRepository, ProductStatisticsService}
-import zio.{Ref, UIO, ZIO}
+import app.domain.stats.{ProductStatistics, ProductStatisticsService}
+import zio.{Ref, UIO}
 
 object ProductStatisticsConfig {
 

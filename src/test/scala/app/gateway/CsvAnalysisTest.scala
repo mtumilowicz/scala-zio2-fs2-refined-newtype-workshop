@@ -1,42 +1,27 @@
 package app.gateway
 
 import app.App
-import app.gateway.out.ProductRatingAnalysisApiOutput
 import app.infrastructure.CsvAnalysisConfig
 import fs2.io.file.{NoSuchFileException, Path}
 import zio.test.Assertion._
 import zio.test.{assert, _}
-import zio.{IO, Scope, ZEnvironment}
+import zio.{Scope, ZIOAppArgs, ZLayer}
 
-object CsvAnalysisTest extends ZIOSpecDefault {
+object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
 
-  val t1 = test("analyse is invoked on non-existing file") {
+  val nonExistingFileTest = test("analyse is invoked on non-existing file") {
+    val path = Path("src/test/resources/csv/nonexistingFile.csv")
+    val program = App.program(path)
     for {
-      //      Given("create in memory analysis")
-      csvAnalysis <- CsvAnalysisConfig.inMemoryAnalysis
-
-      //      When("analyze empty file")
-      executable: IO[Throwable, ProductRatingAnalysisApiOutput] = App
-        .program(Path("src/test/resources/csv/nonexistingFile.csv"))
-        .provideEnvironment(ZEnvironment(csvAnalysis))
-
-      //      Then("verify output")
-      result <- assertM(executable.exit)(fails(isSubtype[NoSuchFileException](anything)))
+      result <- assertM(program.exit)(fails(isSubtype[NoSuchFileException](anything)))
     } yield result
   }
 
-  val t2 = test("analyse is invoked on an empty file") {
+  val emptyFileTest = test("analyse is invoked on an empty file") {
+    val path = Path("src/test/resources/csv/emptyFile.csv")
+    val program = App.program(path)
     for {
-      //      Given("create in memory analysis")
-      csvAnalysis <- CsvAnalysisConfig.inMemoryAnalysis
-
-      //      When("analyze empty file")
-      executable: IO[Throwable, ProductRatingAnalysisApiOutput] = App
-        .program(Path("src/test/resources/csv/emptyFile.csv"))
-        .provideEnvironment(ZEnvironment(csvAnalysis))
-
-      //      Then("verify output")
-      analysis <- executable
+      analysis <- program
     } yield assert(analysis.validLines)(isZero) &&
       assert(analysis.invalidLine)(isZero) &&
       assert(analysis.bestRatedProducts)(isEmpty) &&
@@ -45,18 +30,11 @@ object CsvAnalysisTest extends ZIOSpecDefault {
       assert(analysis.mostRatedProduct)(isNull)
   }
 
-  val t3 = test("analyse is invoked on an non-empty file") {
+  val nonEmptyFileTest = test("analyse is invoked on an non-empty file") {
+    val path = Path("src/test/resources/csv/nonEmptyFile.csv")
+    val program = App.program(path)
     for {
-      //      Given("create in memory analysis")
-      csvAnalysis <- CsvAnalysisConfig.inMemoryAnalysis
-
-      //      When("analyze non-empty file")
-      executable: IO[Throwable, ProductRatingAnalysisApiOutput] = App
-        .program(Path("src/test/resources/csv/nonEmptyFile.csv"))
-        .provideEnvironment(ZEnvironment(csvAnalysis))
-
-      //      Then("verify output")
-      analysis <- executable
+      analysis <- program
     } yield assert(analysis.validLines)(equalTo(49)) &&
       assert(analysis.invalidLine)(equalTo(6)) &&
       assert(analysis.bestRatedProducts)(equalTo(List("blu-ray-01", "fixie-01", "widetv-03"))) &&
@@ -65,11 +43,13 @@ object CsvAnalysisTest extends ZIOSpecDefault {
       assert(analysis.mostRatedProduct)(equalTo("wifi-projector-01"))
   }
 
-  val x = suite("The user can analyse the csv file")(
-    t1,
-    t2,
-    t3
+  val csvAnalysisSuite = suite("The user can analyse the csv file")(
+    nonExistingFileTest,
+    emptyFileTest,
+    nonEmptyFileTest
   )
 
-  override def spec: ZSpec[TestEnvironment with Scope, Any] = x
+  override def spec: ZSpec[CsvAnalysisService with TestEnvironment with ZIOAppArgs with Scope, Any] = csvAnalysisSuite
+
+  override def layer: ZLayer[ZIOAppArgs with Scope, Any, CsvAnalysisService] = ZLayer.fromZIO(CsvAnalysisConfig.inMemoryAnalysis)
 }
