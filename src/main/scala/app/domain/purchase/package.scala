@@ -8,6 +8,7 @@ import eu.timepit.refined.api.{Refined, RefinedTypeOps}
 import eu.timepit.refined.numeric.Interval
 import io.estatico.newtype.macros.newtype
 import cats.implicits._
+import eu.timepit.refined.string.MatchesRegex
 
 import scala.util.{Failure, Success, Try}
 
@@ -19,6 +20,24 @@ package object purchase {
   @newtype case class Rating(raw: RatingR) {
     def toPositiveLong: PositiveLong =
       PositiveLong(Refined.unsafeApply(raw.value))
+  }
+
+  type ProductIdR = String Refined MatchesRegex["^[a-zA-Z][\\w-]+-\\d{2}$"]
+
+  object ProductIdR extends RefinedTypeOps[ProductIdR, String]
+
+  @newtype case class ProductId(raw: ProductIdR)
+
+  object ProductId {
+
+    def make(productId: String): ValidatedNec[String, ProductId] =
+      validate[ProductId](productId)
+        .leftMap(_ => NonEmptyChain("ProductId: should start with letter, ends with -dd, where d is digit, " +
+          "and contains only digits, letters and hyphens!"))
+
+    implicit val ordering: Ordering[ProductId] =
+      Ordering.by[ProductId, String](_.raw.value)
+
   }
 
   object Rating {

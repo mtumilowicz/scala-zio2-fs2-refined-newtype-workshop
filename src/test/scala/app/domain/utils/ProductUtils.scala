@@ -8,7 +8,7 @@ object ProductUtils {
 
   def createProductRating(productId: String, rating: String): ProductRating =
     (
-      ProductId(productId),
+      ProductId.make(productId),
       Rating.make(rating)
       ).mapN(ProductRating) match {
       case Validated.Valid(a) => a

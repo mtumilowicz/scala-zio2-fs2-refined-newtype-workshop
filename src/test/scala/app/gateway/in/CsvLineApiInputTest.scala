@@ -119,7 +119,7 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
       val purchase = validated.getOrElse(null)
       purchase.buyerId.raw shouldBe "buyer1"
       purchase.shopId.raw shouldBe "veloshop"
-      purchase.productId.raw shouldBe "chain-01"
+      purchase.productId.raw.value shouldBe "chain-01"
       purchase.rating.raw.value shouldBe 4
     }
 

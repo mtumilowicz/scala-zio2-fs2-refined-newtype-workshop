@@ -88,9 +88,9 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       top1 = stats.head
       top2 = stats(1)
     } yield assert(stats)(hasSize(equalTo(2))) &&
-      assert(top1.productId.raw)(equalTo("product1-11")) &&
+      assert(top1.productId.raw.value)(equalTo("product1-11")) &&
       assert(top1.statistics.howManyRated.raw.value)(equalTo(3L)) &&
-      assert(top2.productId.raw)(equalTo("product2-11")) &&
+      assert(top2.productId.raw.value)(equalTo("product2-11")) &&
       assert(top2.statistics.howManyRated.raw.value)(equalTo(1L))
   }
 
