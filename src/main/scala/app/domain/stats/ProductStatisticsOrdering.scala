@@ -1,7 +1,6 @@
 package app.domain.stats
 
-import app.domain.common.PositiveLong
-import app.domain.common.PositiveLong._
+import app.domain.common.{PositiveLong, PositiveLongR}
 import app.domain.purchase.ProductId
 import app.domain.purchase.ProductId._
 

@@ -17,6 +17,6 @@ case class CsvLineApiInput(raw: String) {
     BuyerId(array(0)),
     ShopId(array(1)),
     ProductId(array(2)),
-    Rating(array(3)),
+    Rating.make(array(3))
     ).mapN(Purchase)
 }
