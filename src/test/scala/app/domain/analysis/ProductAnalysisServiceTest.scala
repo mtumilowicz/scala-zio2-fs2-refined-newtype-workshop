@@ -10,7 +10,13 @@ import zio.test.{TestEnvironment, ZIOSpecDefault, ZSpec, assert}
 
 object ProductAnalysisServiceTest extends ZIOSpecDefault {
 
-  val emptyDbTest = test("analyzing empty db should result in empty object") {
+  override def spec: ZSpec[TestEnvironment with Scope, Any] =
+    suite("analyze product stats")(
+      emptyDbTest,
+      nonEmptyDbTest,
+    )
+
+  private val emptyDbTest = test("analyzing empty db should result in empty object") {
     for {
       //    Given("create empty")
       service <- ProductAnalysisConfig.inMemoryService
@@ -25,7 +31,7 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
       assert(result.lessRatedProduct)(isNone)
   }
 
-  val nonEmptyDbTest = test("analysing full-packed db should result in correct object") {
+  private val nonEmptyDbTest = test("analysing full-packed db should result in correct object") {
     for {
       // Given("create empty")
       statsService <- ProductStatisticsConfig.inMemoryService
@@ -55,6 +61,12 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
       _ <- statsService.index(ProductUtils.createProductRating("product3-01", 5L))
       _ <- statsService.index(ProductUtils.createProductRating("product3-01", 5L))
 
+      // And("expected results")
+      expectedBestRatedProducts = List(ProductId("product2-01"), ProductId("product4-01"), ProductId("product3-01"))
+      expectedWorstRatedProducts = List(ProductId("product4-01"), ProductId("product2-01"), ProductId("product1-01"))
+      expectedMostRatedProduct = ProductId("product1-01")
+      expectedLessRatedProduct = ProductId("product2-01")
+
       //    When("analyzing empty db")
       result <- service.analyse()
 
@@ -64,17 +76,10 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
       mostRatedProduct = result.mostRatedProduct
       lessRatedProduct = result.lessRatedProduct
     } yield
-      assert(bestRatedProducts)(equalTo(List(ProductId("product2-01"), ProductId("product4-01"), ProductId("product3-01")))) &&
-        assert(worstRatedProducts)(equalTo(List(ProductId("product4-01"), ProductId("product2-01"), ProductId("product1-01")))) &&
-        assert(mostRatedProduct)(isSome(equalTo(ProductId("product1-01")))) &&
-        assert(lessRatedProduct)(isSome(equalTo(ProductId("product2-01"))))
+      assert(bestRatedProducts)(equalTo(expectedBestRatedProducts)) &&
+        assert(worstRatedProducts)(equalTo(expectedWorstRatedProducts)) &&
+        assert(mostRatedProduct)(isSome(equalTo(expectedMostRatedProduct))) &&
+          assert(lessRatedProduct)(isSome(equalTo(expectedLessRatedProduct)))
 
   }
-
-  val productAnalysisSuite = suite("analyze product stats")(
-    emptyDbTest,
-    nonEmptyDbTest,
-  )
-
-  override def spec: ZSpec[TestEnvironment with Scope, Any] = productAnalysisSuite
 }

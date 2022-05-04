@@ -9,7 +9,16 @@ import zio.{Scope, ZIOAppArgs, ZLayer}
 
 object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
 
-  val nonExistingFileTest = test("analyse is invoked on non-existing file") {
+  override def spec: ZSpec[CsvAnalysisService with TestEnvironment with ZIOAppArgs with Scope, Any] =
+    suite("The user can analyse the csv file")(
+      nonExistingFileTest,
+      emptyFileTest,
+      nonEmptyFileTest
+    )
+
+  override def layer: ZLayer[ZIOAppArgs with Scope, Any, CsvAnalysisService] = ZLayer.fromZIO(CsvAnalysisConfig.inMemoryService)
+
+  private val nonExistingFileTest = test("analyse is invoked on non-existing file") {
     val path = Path("src/test/resources/csv/nonexistingFile.csv")
     val program = App.program(path)
     for {
@@ -17,7 +26,7 @@ object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
     } yield result
   }
 
-  val emptyFileTest = test("analyse is invoked on an empty file") {
+  private val emptyFileTest = test("analyse is invoked on an empty file") {
     val path = Path("src/test/resources/csv/emptyFile.csv")
     val program = App.program(path)
     for {
@@ -30,7 +39,7 @@ object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
       assert(analysis.mostRatedProduct)(isNull)
   }
 
-  val nonEmptyFileTest = test("analyse is invoked on an non-empty file") {
+  private val nonEmptyFileTest = test("analyse is invoked on an non-empty file") {
     val path = Path("src/test/resources/csv/nonEmptyFile.csv")
     val program = App.program(path)
     for {
@@ -42,14 +51,4 @@ object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
       assert(analysis.lessRatedProduct)(equalTo("saddle-01")) &&
       assert(analysis.mostRatedProduct)(equalTo("wifi-projector-01"))
   }
-
-  val csvAnalysisSuite = suite("The user can analyse the csv file")(
-    nonExistingFileTest,
-    emptyFileTest,
-    nonEmptyFileTest
-  )
-
-  override def spec: ZSpec[CsvAnalysisService with TestEnvironment with ZIOAppArgs with Scope, Any] = csvAnalysisSuite
-
-  override def layer: ZLayer[ZIOAppArgs with Scope, Any, CsvAnalysisService] = ZLayer.fromZIO(CsvAnalysisConfig.inMemoryService)
 }

@@ -12,7 +12,15 @@ import zio.test.{TestEnvironment, ZIOSpecDefault, ZSpec, assert}
 
 object ProductStatisticsServiceTest extends ZIOSpecDefault {
 
-  val emptyDbTest = test("when called with empty db, should return empty list") {
+  override def spec: ZSpec[TestEnvironment with Scope, Any] =
+    suite("Find top n entries given specific ordering")(
+      emptyDbTest,
+      singleEntryDbTest,
+      collisionsTest,
+      top3HowManyRankedTest
+    )
+
+  private val emptyDbTest = test("when called with empty db, should return empty list") {
     for {
       //      Given("create empty stats")
       service <- ProductStatisticsConfig.inMemoryService
@@ -22,7 +30,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
     } yield assert(top)(isEmpty)
   }
 
-  val singleEntryDbTest = test("when called with db with single entry, should return single result") {
+  private val singleEntryDbTest = test("when called with db with single entry, should return single result") {
     for {
       //      Given("create empty stats")
       service <- ProductStatisticsConfig.inMemoryService
@@ -41,7 +49,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
     } yield assert(stats)(equalTo(List(expectedOutput)))
   }
 
-  val collisionsTest = test("should return stats sorted by product id in case of collisions") {
+  private val collisionsTest = test("should return stats sorted by product id in case of collisions") {
     for {
       //      Given("create empty stats")
       service <- ProductStatisticsConfig.inMemoryService
@@ -67,7 +75,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
     } yield assert(stats)(equalTo(List(product2Stats, product3Stats)))
   }
 
-  val top3HowManyRankedTest = test("find top3 ordered by howManyRanked desc") {
+  private val top3HowManyRankedTest = test("find top3 ordered by howManyRanked desc") {
     for {
       //      Given("create empty stats")
       service <- ProductStatisticsConfig.inMemoryService
@@ -96,13 +104,4 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
       assert(top2.productId)(equalTo(ProductId("product2-11"))) &&
       assert(top2.statistics.howManyRated)(equalTo(PositiveLong(1L)))
   }
-
-  val productStatisticsSuite = suite("Find top n entries given specific ordering")(
-    emptyDbTest,
-    singleEntryDbTest,
-    collisionsTest,
-    top3HowManyRankedTest
-  )
-
-  override def spec: ZSpec[TestEnvironment with Scope, Any] = productStatisticsSuite
 }
