@@ -14,7 +14,7 @@
     * example: an effectful stream may produce data of type: `O` by reading it from a network socket: `IO`
 * example
     ```
-    object Main2 extends scala.App {
+    object Main extends scala.App {
       val stream: fs2.Stream[cats.effect.IO, Int] = fs2.Stream.eval {
         cats.effect.IO { println("BEING RUN!!"); 1 + 1 }
       }
@@ -43,40 +43,38 @@
         * implicitly: via an exception in pure code or inside an effect
     * `handleErrorWith` method lets us catch errors
         * the stream will be terminated after the error and no more values will be pulled
+* `evalMap` vs `map`
+    * evalMap = alias for flatMap(o => Stream.eval(f(o)))
+    * map - should not perform side effects
 
 ## newtype
-* value classes
-    * In vanilla Scala, we can wrap a single field and extend the AnyVal abstract class to avoid
-      some runtime costs
+* value classes context
     * example: `case class Username(val value: String) extends AnyVal`
-    * suppose we want value to be not empty
-        * A way
-          to communicate our intentions to the compiler is to make the case class constructors
-          private only expose smart constructors.
+    * extend the `AnyVal` to avoid some runtime costs
+        * limitations and performance issues
+            * https://docs.scala-lang.org/overviews/core/value-classes.html
+            * A value class is actually instantiated when:
+              • a value class is treated as another type.
+              • a value class is assigned to an array.
+              • doing runtime type tests, such as pattern matching.
+    * problem with validation
+        * suppose we want `Username` to be non-empty string
+        * solution: make constructors private and only expose smart constructors
         * example
             ```
             def mkUsername(value: String): Option[Username] =
-            (value.nonEmpty).guard[Option].as(Username(value))
+                (value.nonEmpty).guard[Option].as(Username(value))
             ```
-    * We can still do wrong...
-        * example: username.copy(value = "")
-        * we are still using case classes, which means the copy method is still there
-        * proper way to finally get around this issue is to use sealed abstract case class es
-            * sealed abstract case class Username(value: String)
-    * limitations and performance issues
-        * https://docs.scala-lang.org/overviews/core/value-classes.html
-        * A value class is actually instantiated when:
-          • a value class is treated as another type.
-          • a value class is assigned to an array.
-          • doing runtime type tests, such as pattern matching.
-    * solution
-        *  avoid value classes and sealed abstract classes completely
-          and instead use the Newtype 2 library, which gives us zero-cost wrappers with no runtime
-          overhead
-* @newtype case class Username(value: String)
-    * It uses macros so we need  an extra compiler flag -Ymacro-annotations in versions 2.13.0 and above
-* Newtypes do not solve validation; they are just zero-cost wrappers
-* haskell analogy
+        * but case classes have copy method, so we can bypass validation
+            * example: `username.copy(value = "")`
+        * solution: `sealed abstract case class Username(value: String)`
+* conclusion: avoid sealed abstract, use the Newtype library
+    * example: `@newtype case class Username(value: String)`
+* `@newtype` gives us zero-cost wrappers with no runtime overhead
+    * uses macros so we need an extra compiler flag `-Ymacro-annotations`
+* remark: @newtype do not solve validation; they are just zero-cost wrappers
+    * we need refined types - discussed in the next chapter
+* haskell digression
     * Using a type synonym for Name
         * type Name = (String,String)
         * names :: [Name]
@@ -129,4 +127,3 @@
           object GTFive extends RefinedTypeOps[GTFive, Int]
           val number: Int = 33
           val res: Either[String, GTFive] = GTFive.from(number)
-* haskell context
