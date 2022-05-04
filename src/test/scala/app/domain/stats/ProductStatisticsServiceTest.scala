@@ -4,7 +4,7 @@ import app.domain.common.PositiveLong
 import app.domain.purchase.ProductId
 import app.domain.stats.ProductStatisticsOrdering._
 import app.domain.utils.ProductUtils
-import app.infrastructure.ProductStatisticsConfig
+import app.infrastructure.module.ProductStatisticsModule
 import eu.timepit.refined.auto._
 import zio.Scope
 import zio.test.Assertion.{equalTo, hasSize, isEmpty}
@@ -23,7 +23,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
   private val emptyDbTest = test("when called with empty db, should return empty list") {
     for {
       //      Given("create empty stats")
-      service <- ProductStatisticsConfig.inMemoryService
+      service <- ProductStatisticsModule.inMemoryService
 
       //      Then("should return empty list")
       top <- service.findTop(5, averageRateDesc_productIdAsc)
@@ -33,7 +33,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
   private val singleEntryDbTest = test("when called with db with single entry, should return single result") {
     for {
       //      Given("create empty stats")
-      service <- ProductStatisticsConfig.inMemoryService
+      service <- ProductStatisticsModule.inMemoryService
 
       //      And("ratings")
       productRating = ProductUtils.createProductRating("product1-11", 1L)
@@ -52,7 +52,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
   private val collisionsTest = test("should return stats sorted by product id in case of collisions") {
     for {
       //      Given("create empty stats")
-      service <- ProductStatisticsConfig.inMemoryService
+      service <- ProductStatisticsModule.inMemoryService
 
       //      And("ratings")
       productRating1 = ProductUtils.createProductRating("product1-11", 1L)
@@ -78,7 +78,7 @@ object ProductStatisticsServiceTest extends ZIOSpecDefault {
   private val top3HowManyRankedTest = test("find top3 ordered by howManyRanked desc") {
     for {
       //      Given("create empty stats")
-      service <- ProductStatisticsConfig.inMemoryService
+      service <- ProductStatisticsModule.inMemoryService
 
       //      And("ratings")
       productRating1 = ProductUtils.createProductRating("product1-11", 1L)

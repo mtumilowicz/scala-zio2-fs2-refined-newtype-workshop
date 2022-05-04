@@ -2,7 +2,7 @@ package app
 
 import app.gateway.CsvAnalysisService
 import app.gateway.out.ProductRatingAnalysisApiOutput
-import app.infrastructure.EnvironmentConfig
+import app.infrastructure.environment.EnvironmentConfig
 import fs2.io.file.Path
 import zio.{Console, ExitCode, ZIO, ZIOAppArgs, ZIOAppDefault}
 

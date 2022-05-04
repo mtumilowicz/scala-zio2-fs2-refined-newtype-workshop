@@ -1,13 +1,13 @@
-package app.infrastructure
+package app.infrastructure.module
 
 import app.domain.analysis.ProductAnalysisService
 import app.domain.stats.ProductStatisticsService
 import zio.UIO
 
-object ProductAnalysisConfig {
+object ProductAnalysisModule {
 
   def inMemoryService: UIO[ProductAnalysisService] =
-    ProductStatisticsConfig.inMemoryService.map(service)
+    ProductStatisticsModule.inMemoryService.map(service)
 
   def service(service: ProductStatisticsService): ProductAnalysisService =
     new ProductAnalysisService(service)

@@ -1,7 +1,7 @@
 package app.gateway
 
 import app.App
-import app.infrastructure.CsvAnalysisConfig
+import app.infrastructure.module.CsvAnalysisModule
 import fs2.io.file.{NoSuchFileException, Path}
 import zio.test.Assertion._
 import zio.test.{assert, _}
@@ -16,7 +16,7 @@ object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
       nonEmptyFileTest
     )
 
-  override def layer: ZLayer[ZIOAppArgs with Scope, Any, CsvAnalysisService] = ZLayer.fromZIO(CsvAnalysisConfig.inMemoryService)
+  override def layer: ZLayer[ZIOAppArgs with Scope, Any, CsvAnalysisService] = ZLayer.fromZIO(CsvAnalysisModule.inMemoryService)
 
   private val nonExistingFileTest = test("analyse is invoked on non-existing file") {
     val path = Path("src/test/resources/csv/nonexistingFile.csv")

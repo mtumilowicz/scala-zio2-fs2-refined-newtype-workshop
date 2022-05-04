@@ -1,4 +1,4 @@
-package app.infrastructure
+package app.infrastructure.product
 
 import app.domain.purchase.ProductId
 import app.domain.rating.ProductRating

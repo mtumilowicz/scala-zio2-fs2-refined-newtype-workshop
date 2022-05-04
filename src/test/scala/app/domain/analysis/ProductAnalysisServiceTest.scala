@@ -2,7 +2,7 @@ package app.domain.analysis
 
 import app.domain.purchase.ProductId
 import app.domain.utils.ProductUtils
-import app.infrastructure.{ProductAnalysisConfig, ProductStatisticsConfig}
+import app.infrastructure.module.{ProductAnalysisModule, ProductStatisticsModule}
 import eu.timepit.refined.auto._
 import zio.Scope
 import zio.test.Assertion._
@@ -19,7 +19,7 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
   private val emptyDbTest = test("analyzing empty db should result in empty object") {
     for {
       //    Given("create empty")
-      service <- ProductAnalysisConfig.inMemoryService
+      service <- ProductAnalysisModule.inMemoryService
 
       //    When("analyzing empty db")
       result <- service.analyse()
@@ -34,8 +34,8 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
   private val nonEmptyDbTest = test("analysing full-packed db should result in correct object") {
     for {
       // Given("create empty")
-      statsService <- ProductStatisticsConfig.inMemoryService
-      service = ProductAnalysisConfig.service(statsService)
+      statsService <- ProductStatisticsModule.inMemoryService
+      service = ProductAnalysisModule.service(statsService)
 
       // And("add ratings with 5 x 1, avg = 1")
       _ <- statsService.index(ProductUtils.createProductRating("product1-01", 1L))
