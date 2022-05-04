@@ -1,4 +1,7 @@
 # scala-zio2-fs2-refined-newtype-workshop
+* references
+    * https://fs2.io
+    * [Klarna Tech Talks: Compose your program flow with Stream - Fabio Labella](https://www.youtube.com/watch?v=x3GLwl1FxcA)
 
 ## fs2
 * `Stream[F,O]` represents a stream of `O` values which may request evaluation of `F` effects
@@ -36,3 +39,7 @@
         * implicitly: via an exception in pure code or inside an effect
     * `handleErrorWith` method lets us catch errors
         * the stream will be terminated after the error and no more values will be pulled
+
+## refined types
+
+## newtype
