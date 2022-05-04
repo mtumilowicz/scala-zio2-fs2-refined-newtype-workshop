@@ -1,48 +1,32 @@
 package app.gateway
 
 import app.domain.analysis.ProductAnalysisService
-import app.domain.purchase.Purchase
-import app.gateway.in.CsvLineApiInput
+import app.domain.rating.{ProductRating, RatingService}
 import app.gateway.out.{ParsingSummary, ProductRatingAnalysisApiOutput}
 import cats.data.Validated.{Invalid, Valid}
-import fs2.io.file.{Files, Path}
-import fs2.text
-import zio.Task
+import cats.data.ValidatedNec
+import fs2.io.file.Path
 import zio.interop.catz._
+import zio.{Task, UIO}
 
-class CsvAnalysisService(analysisService: ProductAnalysisService) {
+class CsvAnalysisService(analysisService: ProductAnalysisService,
+                         ratingService: RatingService) {
 
   def calculate(path: Path): Task[ProductRatingAnalysisApiOutput] = for {
-    _ <- findAll(path)
-      .map(_.toProductRating)
-      .evalMap(analysisService.addToStatistics)
-      .compile
-      .drain
-    parsingSummary <- parsingSummary(path)
-    analysis <- analysisService.analyse()
-  } yield ProductRatingAnalysisApiOutput.fromDomain(analysis, parsingSummary)
-
-  private def findAll(path: Path): fs2.Stream[Task, Purchase] =
-    Files[Task].readAll(path)
-      .through(text.utf8.decode)
-      .through(text.lines)
-      .drop(1)
-      .map(CsvLineApiInput)
-      .map(_.toDomain)
-      .collect {
-        case Valid(a) => a
-      }
-
-  private def parsingSummary(path: Path): Task[ParsingSummary] =
-    Files[Task].readAll(path)
-      .through(text.utf8.decode)
-      .through(text.lines)
-      .drop(1)
-      .map(CsvLineApiInput)
-      .map(_.toDomain)
+    parsingSummary <- ratingService.findAll(path)
+      .evalTap(addToStatistics)
       .compile
       .fold(ParsingSummary.zero()) {
         case (summary, Invalid(_)) => summary.invalidLineSpotted()
         case (summary, Valid(_)) => summary.validLineSpotted()
       }
+    analysis <- analysisService.analyse()
+  } yield ProductRatingAnalysisApiOutput.fromDomain(analysis, parsingSummary)
+
+  private def addToStatistics(validatedPurchase: ValidatedNec[String, ProductRating]): UIO[ValidatedNec[String, ProductRating]] =
+    validatedPurchase match {
+      case Valid(a) =>
+        analysisService.addToStatistics(a) *> UIO.succeed(validatedPurchase)
+      case Invalid(_) => UIO.succeed(validatedPurchase)
+    }
 }

@@ -1,6 +1,6 @@
 package app.domain.stats
 
-import app.domain.purchase.ProductRating
+import app.domain.rating.ProductRating
 import zio.UIO
 
 

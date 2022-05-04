@@ -5,9 +5,10 @@ import zio.UIO
 
 object CsvAnalysisConfig {
 
-  def inMemoryAnalysis: UIO[CsvAnalysisService] = for {
+  def inMemoryService: UIO[CsvAnalysisService] = for {
     statsService <- ProductStatisticsConfig.inMemoryService
     analysisService = ProductAnalysisConfig.service(statsService)
-  } yield new CsvAnalysisService(analysisService = analysisService)
+    ratingService = RatingConfig.inMemoryService
+  } yield new CsvAnalysisService(analysisService = analysisService, ratingService = ratingService)
 
 }

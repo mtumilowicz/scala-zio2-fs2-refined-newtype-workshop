@@ -1,6 +1,7 @@
 package app.infrastructure
 
-import app.domain.purchase.{ProductId, ProductRating}
+import app.domain.purchase.ProductId
+import app.domain.rating.ProductRating
 import app.domain.stats.{ProductStatistics, ProductStatisticsRepository}
 import zio.{Ref, UIO}
 

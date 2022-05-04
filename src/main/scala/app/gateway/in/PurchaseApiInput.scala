@@ -1,10 +1,11 @@
 package app.gateway.in
 
 import app.domain.purchase._
+import app.domain.rating.Rating
 import cats.data._
 import cats.implicits._
 
-case class CsvLineApiInput(raw: String) {
+case class PurchaseApiInput(raw: String) {
   def toDomain: ValidatedNec[String, Purchase] = {
     val arr = raw.split(",")
     if (arr.length == 4)

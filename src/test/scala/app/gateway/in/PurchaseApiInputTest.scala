@@ -1,6 +1,7 @@
 package app.gateway.in
 
-import app.domain.purchase.{BuyerId, ProductId, Rating, ShopId}
+import app.domain.purchase.{BuyerId, ProductId, ShopId}
+import app.domain.rating.Rating
 import cats.data.Chain
 import cats.implicits._
 import eu.timepit.refined.auto._
@@ -9,12 +10,12 @@ import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDrivenPropertyChecks {
+class PurchaseApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDrivenPropertyChecks {
 
   Feature("Parsing csv line into domain Purchase") {
     Scenario("parsing empty line should fail") {
       Given("create empty line")
-      val line = CsvLineApiInput("")
+      val line = PurchaseApiInput("")
 
       When("validated")
       val validated = line.toDomain
@@ -25,7 +26,7 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
 
     Scenario("parsing line with empty columns should fail") {
       Given("create line with empty columns")
-      val line = CsvLineApiInput(",,,")
+      val line = PurchaseApiInput(",,,")
 
       When("validated")
       val validated = line.toDomain
@@ -36,7 +37,7 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
 
     Scenario("parsing not full line should fail") {
       Given("create line with empty columns")
-      val line = CsvLineApiInput("buyer1,,product-00,3")
+      val line = PurchaseApiInput("buyer1,,product-00,3")
 
       When("validated")
       val validated = line.toDomain
@@ -47,7 +48,7 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
 
     Scenario("parsing malformed line should fail - buyerId, shopId, productId should start with letter") {
       Given("create malformed line")
-      val line = CsvLineApiInput("1buyer,2shop,3product-sd-11,0")
+      val line = PurchaseApiInput("1buyer,2shop,3product-sd-11,0")
 
       When("validated")
       val validated = line.toDomain
@@ -64,7 +65,7 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
 
     Scenario("parsing malformed line should fail - improper characters") {
       Given("create malformed line")
-      val line = CsvLineApiInput("b@uyer,s!hop,pro#duct-sd-11,d")
+      val line = PurchaseApiInput("b@uyer,s!hop,pro#duct-sd-11,d")
 
       When("validated")
       val validated = line.toDomain
@@ -89,7 +90,7 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
 
       Then("verify that error")
       forAll(lines) { line =>
-        CsvLineApiInput(line).toDomain shouldBe "Rating: should be in range 1-5 inclusive".invalidNec
+        PurchaseApiInput(line).toDomain shouldBe "Rating: should be in range 1-5 inclusive".invalidNec
 
       }
     }
@@ -106,13 +107,13 @@ class CsvLineApiInputTest extends AnyFeatureSpec with GivenWhenThen with TableDr
 
       Then("verify that error")
       forAll(lines) { line =>
-        CsvLineApiInput(line).toDomain shouldBe "ProductId: should start with letter, ends with -dd, where d is digit, and contains only digits, letters and hyphens!".invalidNec
+        PurchaseApiInput(line).toDomain shouldBe "ProductId: should start with letter, ends with -dd, where d is digit, and contains only digits, letters and hyphens!".invalidNec
       }
     }
 
     Scenario("create purchase from correct line") {
       Given("create correct line")
-      val line = CsvLineApiInput("buyer1,veloshop,chain-01,4")
+      val line = PurchaseApiInput("buyer1,veloshop,chain-01,4")
 
       When("validated")
       val validated = line.toDomain

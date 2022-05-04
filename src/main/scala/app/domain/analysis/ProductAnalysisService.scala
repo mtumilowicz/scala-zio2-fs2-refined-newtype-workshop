@@ -1,6 +1,7 @@
 package app.domain.analysis
 
-import app.domain.purchase.{ProductId, ProductRating}
+import app.domain.purchase.ProductId
+import app.domain.rating.ProductRating
 import app.domain.stats.ProductStatisticsOrdering._
 import app.domain.stats.ProductStatisticsService
 import zio.UIO

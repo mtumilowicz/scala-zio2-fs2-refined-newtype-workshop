@@ -51,5 +51,5 @@ object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
 
   override def spec: ZSpec[CsvAnalysisService with TestEnvironment with ZIOAppArgs with Scope, Any] = csvAnalysisSuite
 
-  override def layer: ZLayer[ZIOAppArgs with Scope, Any, CsvAnalysisService] = ZLayer.fromZIO(CsvAnalysisConfig.inMemoryAnalysis)
+  override def layer: ZLayer[ZIOAppArgs with Scope, Any, CsvAnalysisService] = ZLayer.fromZIO(CsvAnalysisConfig.inMemoryService)
 }

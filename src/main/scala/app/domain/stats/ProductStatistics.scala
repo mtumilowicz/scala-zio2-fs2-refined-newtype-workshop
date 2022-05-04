@@ -1,6 +1,7 @@
 package app.domain.stats
 
-import app.domain.purchase.{ProductId, Rating}
+import app.domain.purchase.ProductId
+import app.domain.rating.Rating
 
 case class ProductStatistics(productId: ProductId, statistics: Statistics) {
 

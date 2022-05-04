@@ -6,7 +6,7 @@ import zio.{UIO, ZEnvironment}
 object EnvironmentConfig {
 
   val inMemory: UIO[ZEnvironment[CsvAnalysisService]] = for {
-    csvAnalysis <- CsvAnalysisConfig.inMemoryAnalysis
+    csvAnalysis <- CsvAnalysisConfig.inMemoryService
   } yield ZEnvironment(csvAnalysis)
 
 }
