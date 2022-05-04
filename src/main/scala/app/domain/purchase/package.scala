@@ -1,16 +1,11 @@
 package app.domain
 
 import app.domain.common.NewtypeRefinedOps._
-import app.domain.common.PositiveLong
 import cats.data.{NonEmptyChain, ValidatedNec}
 import cats.implicits._
-import eu.timepit.refined._
 import eu.timepit.refined.api.{Refined, RefinedTypeOps}
-import eu.timepit.refined.numeric.Interval
 import eu.timepit.refined.string.MatchesRegex
 import io.estatico.newtype.macros.newtype
-
-import scala.util.{Failure, Success, Try}
 
 package object purchase {
 

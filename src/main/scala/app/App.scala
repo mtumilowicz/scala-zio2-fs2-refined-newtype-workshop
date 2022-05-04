@@ -16,7 +16,7 @@ object App extends ZIOAppDefault {
     _ <- Console.printLine(result.toString)
   } yield ExitCode.success
 
-  def program(path: Path): ZIO[CsvAnalysisService, Throwable, ProductRatingAnalysisApiOutput]= for {
+  def program(path: Path): ZIO[CsvAnalysisService, Throwable, ProductRatingAnalysisApiOutput] = for {
     analysis <- ZIO.service[CsvAnalysisService]
     result <- analysis.calculate(path)
   } yield result

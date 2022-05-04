@@ -9,6 +9,6 @@ class RatingService(purchaseService: PurchaseService) {
 
   def findAll(path: Path): fs2.Stream[Task, Validated[NonEmptyChain[String], ProductRating]] =
     purchaseService.findAll(path)
-    .map(_.map(ProductRating.from))
+      .map(_.map(ProductRating.from))
 
 }

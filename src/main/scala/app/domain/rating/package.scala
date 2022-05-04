@@ -3,11 +3,11 @@ package app.domain
 import app.domain.common.NewtypeRefinedOps.validate
 import app.domain.common.PositiveLong
 import cats.data.{NonEmptyChain, ValidatedNec}
+import cats.implicits._
 import eu.timepit.refined.W
 import eu.timepit.refined.api.{Refined, RefinedTypeOps}
 import eu.timepit.refined.numeric.Interval
 import io.estatico.newtype.macros.newtype
-import cats.implicits._
 
 import scala.util.{Failure, Success, Try}
 

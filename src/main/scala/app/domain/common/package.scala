@@ -7,6 +7,7 @@ import io.estatico.newtype.macros.newtype
 
 package object common {
   type PositiveLongR = Long Refined Positive
+
   @newtype case class PositiveLong(raw: PositiveLongR) {
     def increment(): PositiveLong =
       PositiveLong(Refined.unsafeApply(raw + 1))
@@ -17,6 +18,7 @@ package object common {
     def /(i: PositiveLong): BigDecimal =
       BigDecimal(raw) / BigDecimal(i.raw)
   }
+
   object PositiveLong {
     def ONE: PositiveLong =
       PositiveLong(1L)

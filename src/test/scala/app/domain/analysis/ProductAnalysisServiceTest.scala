@@ -79,7 +79,7 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
       assert(bestRatedProducts)(equalTo(expectedBestRatedProducts)) &&
         assert(worstRatedProducts)(equalTo(expectedWorstRatedProducts)) &&
         assert(mostRatedProduct)(isSome(equalTo(expectedMostRatedProduct))) &&
-          assert(lessRatedProduct)(isSome(equalTo(expectedLessRatedProduct)))
+        assert(lessRatedProduct)(isSome(equalTo(expectedLessRatedProduct)))
 
   }
 }

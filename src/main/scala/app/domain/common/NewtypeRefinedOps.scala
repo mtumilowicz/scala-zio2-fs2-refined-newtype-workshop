@@ -6,6 +6,7 @@ import eu.timepit.refined.api.{Refined, Validate}
 import eu.timepit.refined.refineV
 
 object NewtypeRefinedOps {
+
   import io.estatico.newtype.Coercible
   import io.estatico.newtype.ops._
 
@@ -16,6 +17,7 @@ object NewtypeRefinedOps {
     ): ValidatedNec[String, A] =
       refineV[P](raw).toValidatedNec.map(_.coerce[A])
   }
+
   def validate[A]: NewtypeRefinedPartiallyApplied[A] =
     new NewtypeRefinedPartiallyApplied[A]
 }

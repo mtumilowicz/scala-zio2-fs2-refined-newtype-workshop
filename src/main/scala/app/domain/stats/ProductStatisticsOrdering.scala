@@ -10,7 +10,7 @@ object ProductStatisticsOrdering {
 
   private val byHowManyRated = Ordering.by[ProductStatistics, PositiveLong](_.statistics.howManyRated)
   private val byAverage = Ordering.by[ProductStatistics, BigDecimal](_.statistics.average())
-  private val byProductId =  Ordering.by[ProductStatistics, ProductId](_.productId)
+  private val byProductId = Ordering.by[ProductStatistics, ProductId](_.productId)
 
   val howManyRatedDesc_productIdAsc: Ordering[ProductStatistics] =
     createOrdering(byHowManyRated, byProductId)
@@ -19,6 +19,6 @@ object ProductStatisticsOrdering {
     createOrdering(byAverage, byProductId)
 
   def createOrdering(by1: Ordering[ProductStatistics], by2: Ordering[ProductStatistics]): Ordering[ProductStatistics] =
-    Ordering.by{ x: ProductStatistics => (x, x) }(Ordering.Tuple2(by1, by2))
+    Ordering.by { x: ProductStatistics => (x, x) }(Ordering.Tuple2(by1, by2))
 
 }
