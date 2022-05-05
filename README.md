@@ -14,6 +14,7 @@
     * @newtype: zero-cost wrappers
     * refined types: compile and runtime type validation
 * workshop task: implement `PurchaseRepository` and integrate with file
+    * answer: `PurchaseFileRepository`
 
 ## introduction
 * for basics info about effect please refer first: https://github.com/mtumilowicz/scala-http4s-zio-doobie-workshop
