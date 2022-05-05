@@ -114,22 +114,32 @@
                 * opposite isn’t true
 
 ## refined types
-* Refinement types allow us to validate data at compile time as well as at runtime
-    * example
-        * import eu.timepit.refined.types.string.NonEmptyString
-        * type Username = NonEmptyString
-        * def lookup(username: Username): F[Option[User]]
-        * import eu.timepit.refined.auto._
-          $ lookup("") ?// error
+* refinement types allow us to validate data at compile time as well as at runtime
+* example
+    * compile time validation
+        ```
+        import eu.timepit.refined.types.string.NonEmptyString
 
-    * custom refinement type
-        * Most refinement types provide a convenient from method, which take the raw value and
-          returns a validated one or an error message.
-            * val res: Either[String, NonEmptyString] =
-              NonEmptyString.from(str)
-        * import eu.timepit.refined.api.RefinedTypeOps
-          import eu.timepit.refined.numeric.Greater
-          type GTFive = Int Refined Greater[5]
-          object GTFive extends RefinedTypeOps[GTFive, Int]
-          val number: Int = 33
-          val res: Either[String, GTFive] = GTFive.from(number)
+        type Username = NonEmptyString
+        def lookup(username: Username): F[Option[User]]
+        ```
+        and then
+        ```
+        import eu.timepit.refined.auto._
+        lookup("") // compilation error
+        ```
+    * runtime validation: refinement types provide `from` method
+        ```
+        val res: Either[String, NonEmptyString] = NonEmptyString.from(str)
+        ```
+* custom refinement type
+    * Most refinement types provide a convenient from method, which take the raw value and
+      returns a validated one or an error message.
+        * val res: Either[String, NonEmptyString] =
+          NonEmptyString.from(str)
+    * import eu.timepit.refined.api.RefinedTypeOps
+      import eu.timepit.refined.numeric.Greater
+      type GTFive = Int Refined Greater[5]
+      object GTFive extends RefinedTypeOps[GTFive, Int]
+      val number: Int = 33
+      val res: Either[String, GTFive] = GTFive.from(number)
