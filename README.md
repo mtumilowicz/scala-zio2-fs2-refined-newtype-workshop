@@ -133,13 +133,13 @@
         val res: Either[String, NonEmptyString] = NonEmptyString.from(str)
         ```
 * custom refinement type
-    * Most refinement types provide a convenient from method, which take the raw value and
-      returns a validated one or an error message.
-        * val res: Either[String, NonEmptyString] =
-          NonEmptyString.from(str)
-    * import eu.timepit.refined.api.RefinedTypeOps
-      import eu.timepit.refined.numeric.Greater
-      type GTFive = Int Refined Greater[5]
-      object GTFive extends RefinedTypeOps[GTFive, Int]
-      val number: Int = 33
-      val res: Either[String, GTFive] = GTFive.from(number)
+    ```
+    import eu.timepit.refined.api.RefinedTypeOps
+    import eu.timepit.refined.numeric.Greater
+
+    type GTFive = Int Refined Greater[5]
+    object GTFive extends RefinedTypeOps[GTFive, Int] // adds `from` method
+
+    val number: Int = 33
+    val res: Either[String, GTFive] = GTFive.from(number)
+    ```
