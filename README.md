@@ -6,6 +6,10 @@
     * https://www.manning.com/books/get-programming-with-haskell
     * https://github.com/fthomas/refined
     * https://github.com/estatico/scala-newtype
+    * https://wiki.haskell.org/Newtype
+
+## introduction
+* for basics info about effect please refer first: https://github.com/mtumilowicz/scala-http4s-zio-doobie-workshop
 
 ## fs2
 * `Stream[F,O]` represents a stream of `O` values which may request evaluation of `F` effects
@@ -75,37 +79,39 @@
 * remark: @newtype do not solve validation; they are just zero-cost wrappers
     * we need refined types - discussed in the next chapter
 * haskell digression
-    * Using a type synonym for Name
-        * type Name = (String,String)
-        * names :: [Name]
-          names = [ ("Emil","Cioran")
-          , ("Eugene","Thacker")
-          , ("Friedrich","Nietzsche")]
-    * Attempt to implement Ord for a type synonym
-        * instance Ord Name where
-          compare (f1,l1) (f2,l2) = compare (l1,f1) (l2,f2)
-        * But when you try to load this code, you get an error! This is because to Haskell, Name is
-          identical to (String, String), and, as you’ve seen, Haskell already knows how to sort
-          these
-        * solution: you need create a new data type
-    * data Name = Name (String, String)
-        * instance Ord Name where
-           compare (Name (f1,l1)) (Name (f2,l2)) = compare (l1,f1) (l2,f2)
-    * When looking at our type definition for Name , you find an interesting case in which you’d
-      like to use a type synonym, but need to define a data type in order to make your type an
-      instance of a type class.
-      * Haskell has a preferred method of doing this: using the newtype
-        keyword. Here’s an example of the definition of Name using newtype :
-        newtype Name = Name (String, String)
-      * Any type that you can
-        define with newtype , you can also define using data . But the opposite isn’t true.
-        * Types
-          defined with newtype can have only one type constructor and one type (in the case of Name ,
-          it’s Tuple ).
-        *
-    * The restriction to one constructor with one field means that the new type and the type of the field are in direct correspondence
-        * or in mathematical terms they are isomorphic
-        * This means that after the type is checked at compile time, at run time the two types can be treated essentially the same, without the overhead or indirection normally associated with a data constructor
+    * problem
+        ```
+        type Name = (String,String) // type synonym
+
+        names :: [Name] // list definition
+        names = [ ("Emil","Cioran"), ("Eugene","Thacker"), ("Friedrich","Nietzsche") ]
+        ```
+        * attempt to implement `Ord` for a type synonym produces compile time error
+            ```
+            instance Ord Name where
+                      compare (f1,l1) (f2,l2) = compare (l1,f1) (l2,f2)
+            ```
+            * to Haskell, Name is identical to (String, String) and Haskell already knows how to sort tuples
+    * solution: you need create a new data type
+        ```
+        data Name = Name (String, String)
+
+        instance Ord Name where
+                   compare (Name (f1,l1)) (Name (f2,l2)) = compare (l1,f1) (l2,f2)
+        ```
+    * but we want only type synonym, but with custom instances of a type classes
+        * Haskell has a preferred method of doing this: using the `newtype` keyword
+            ```
+            newtype Name = Name (String, String)
+            ```
+        * types defined with `newtype` can have only one type constructor and one type
+            * new type and the type of the field are in direct correspondence
+                * in mathematical terms: are isomorphic
+            * after the type is checked at compile time, at run time the two types can be treated essentially the same
+                * without the overhead or indirection normally associated with a data constructor
+        * `data` context
+            * everything you define with `newtype`, you can also define using `data`
+                * opposite isn’t true
 
 ## refined types
 * Refinement types allow us to validate data at compile time as well as at runtime
