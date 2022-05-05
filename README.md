@@ -8,6 +8,13 @@
     * https://github.com/estatico/scala-newtype
     * https://wiki.haskell.org/Newtype
 
+## preface
+* goals of this workshop
+    * introduction to purely functional effectful streams
+    * @newtype: zero-cost wrappers
+    * refined types: compile and runtime type validation
+* workshop task: implement `PurchaseRepository` and integrate with file
+
 ## introduction
 * for basics info about effect please refer first: https://github.com/mtumilowicz/scala-http4s-zio-doobie-workshop
 
