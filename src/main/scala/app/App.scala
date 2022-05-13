@@ -8,10 +8,10 @@ import zio.{Console, ExitCode, ZIO, ZIOAppArgs, ZIOAppDefault}
 
 object App extends ZIOAppDefault {
 
-  override def run: ZIO[ZIOAppArgs, Any, Any] = for {
+  val run = for {
     environment <- EnvironmentConfig.inMemory
     args <- ZIO.service[ZIOAppArgs]
-    path = getFromArgsOrDefault(args)
+    path = pathFromArgsOrDefault(args)
     result <- program(path).provideEnvironment(environment)
     _ <- Console.printLine(result.toString)
   } yield ExitCode.success
@@ -21,7 +21,7 @@ object App extends ZIOAppDefault {
     result <- analysis.calculate(path)
   } yield result
 
-  private def getFromArgsOrDefault(zioAppArgs: ZIOAppArgs): Path =
+  private def pathFromArgsOrDefault(zioAppArgs: ZIOAppArgs): Path =
     Path(zioAppArgs.getArgs.headOption.getOrElse("src/main/resources/file.csv"))
 
 }
