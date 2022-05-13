@@ -8,7 +8,7 @@ import fs2.text
 import zio.Task
 import zio.interop.catz._
 
-class PurchaseFileRepository extends PurchaseRepository {
+class PurchaseCsvFileRepository extends PurchaseRepository {
   override def findAll(path: Path): fs2.Stream[Task, ValidatedNec[String, Purchase]] =
     Files[Task].readAll(path)
       .through(text.utf8.decode)

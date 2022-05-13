@@ -7,16 +7,16 @@ import zio.test.Assertion._
 import zio.test.{assert, _}
 import zio.{Scope, ZIOAppArgs, ZLayer}
 
-object CsvAnalysisTest extends ZIOSpec[CsvAnalysisService] {
+object CsvAnalysisTest extends ZIOSpec[AnalysisService] {
 
-  override def spec: ZSpec[CsvAnalysisService with TestEnvironment with ZIOAppArgs with Scope, Any] =
+  override def spec: ZSpec[AnalysisService with TestEnvironment with ZIOAppArgs with Scope, Any] =
     suite("The user can analyse the csv file")(
       nonExistingFileTest,
       emptyFileTest,
       nonEmptyFileTest
     )
 
-  override def layer: ZLayer[ZIOAppArgs with Scope, Any, CsvAnalysisService] = ZLayer.fromZIO(CsvAnalysisModule.inMemoryService)
+  override def layer: ZLayer[ZIOAppArgs with Scope, Any, AnalysisService] = ZLayer.fromZIO(CsvAnalysisModule.inMemoryService)
 
   private val nonExistingFileTest = test("analyse is invoked on non-existing file") {
     val path = Path("src/test/resources/csv/nonexistingFile.csv")
