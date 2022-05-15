@@ -68,9 +68,9 @@
         * limitations and performance issues
             * https://docs.scala-lang.org/overviews/core/value-classes.html
             * A value class is actually instantiated when:
-              • a value class is treated as another type.
-              • a value class is assigned to an array.
-              • doing runtime type tests, such as pattern matching.
+              * a value class is treated as another type.
+              * a value class is assigned to an array.
+              * doing runtime type tests, such as pattern matching.
     * problem with validation
         * suppose we want `Username` to be non-empty string
         * solution: make constructors private and only expose smart constructors
