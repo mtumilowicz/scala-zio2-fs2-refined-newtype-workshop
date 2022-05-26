@@ -15,7 +15,7 @@
     * introduction to purely functional effectful streams
     * @newtype: zero-cost wrappers
     * refined types: compile and runtime type validation
-* workshop task: implement `PurchaseRepository` and integrate with file
+* workshop task: implement `PurchaseRepository` and integrate with `file.csv`
     * answer: `PurchaseFileRepository`
 
 ## introduction
