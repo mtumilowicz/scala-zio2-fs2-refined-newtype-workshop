@@ -1,11 +1,17 @@
 package app.infrastructure.module
 
-import app.domain.purchase.PurchaseService
+import app.domain.purchase.{PurchaseRepository, PurchaseService}
 import app.infrastructure.purchase.PurchaseCsvFileRepository
+import zio.{URLayer, ZLayer}
 
 object PurchaseModule {
 
+  def serviceLayer: URLayer[PurchaseRepository, PurchaseService] =
+    ZLayer.fromFunction(PurchaseService.apply _)
+
+  def csvRepository = ZLayer.succeed(new PurchaseCsvFileRepository())
+
   def inMemoryService =
-    new PurchaseService(new PurchaseCsvFileRepository())
+    PurchaseService(new PurchaseCsvFileRepository())
 
 }

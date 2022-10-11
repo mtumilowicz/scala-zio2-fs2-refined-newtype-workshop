@@ -5,7 +5,7 @@ import cats.data.{NonEmptyChain, Validated}
 import fs2.io.file.Path
 import zio.Task
 
-class RatingService(purchaseService: PurchaseService) {
+case class RatingService(purchaseService: PurchaseService) {
 
   def findAll(path: Path): fs2.Stream[Task, Validated[NonEmptyChain[String], ProductRating]] =
     purchaseService.findAll(path)

@@ -1,11 +1,11 @@
 package app.gateway
 
 import app.App
-import app.infrastructure.module.CsvAnalysisModule
+import app.infrastructure.module._
 import fs2.io.file.{NoSuchFileException, Path}
 import zio.test.Assertion._
 import zio.test.{assert, _}
-import zio.{Scope, ZIOAppArgs, ZLayer}
+import zio.{Scope, ULayer, ZIO, ZIOAppArgs, ZLayer}
 
 object CsvAnalysisTest extends ZIOSpec[AnalysisService] {
 
@@ -15,8 +15,6 @@ object CsvAnalysisTest extends ZIOSpec[AnalysisService] {
       emptyFileTest,
       nonEmptyFileTest
     )
-
-  override def layer: ZLayer[ZIOAppArgs with Scope, Any, AnalysisService] = ZLayer.fromZIO(CsvAnalysisModule.inMemoryService)
 
   private val nonExistingFileTest = test("analyse is invoked on non-existing file") {
     val path = Path("src/test/resources/csv/nonexistingFile.csv")
@@ -50,5 +48,18 @@ object CsvAnalysisTest extends ZIOSpec[AnalysisService] {
       assert(analysis.worstRatedProducts)(equalTo(List("patagonia-01", "smarttv-01", "endura-01"))) &&
       assert(analysis.lessRatedProduct)(equalTo("saddle-01")) &&
       assert(analysis.mostRatedProduct)(equalTo("wifi-projector-01"))
+  }
+
+  override def layer: ULayer[AnalysisService] = ZLayer.fromZIO {
+    ZIO.service[AnalysisService]
+      .provide(
+        CsvAnalysisModule.serviceLayer,
+        ProductAnalysisModule.serviceLayer,
+        ProductStatisticsModule.service,
+        ProductStatisticsModule.inMemoryRepositoryLayer,
+        PurchaseModule.serviceLayer,
+        PurchaseModule.csvRepository,
+        RatingModule.serviceLayer
+      )
   }
 }

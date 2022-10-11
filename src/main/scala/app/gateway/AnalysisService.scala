@@ -9,7 +9,7 @@ import fs2.io.file.Path
 import zio.interop.catz._
 import zio.{Task, UIO}
 
-class AnalysisService(analysisService: ProductAnalysisService,
+case class AnalysisService(analysisService: ProductAnalysisService,
                       ratingService: RatingService) {
 
   def calculate(path: Path): Task[ProductRatingAnalysisApiOutput] = for {

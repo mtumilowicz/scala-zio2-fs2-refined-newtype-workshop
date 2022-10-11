@@ -6,7 +6,7 @@ import app.domain.stats.ProductStatisticsOrdering._
 import app.domain.stats.ProductStatisticsService
 import zio.UIO
 
-class ProductAnalysisService(statsService: ProductStatisticsService) {
+case class ProductAnalysisService(statsService: ProductStatisticsService) {
 
   def analyse(): UIO[ProductRatingAnalysis] = for {
     bestRatedProducts <- findBestRatedProducts()

@@ -4,7 +4,7 @@ import app.domain.rating.ProductRating
 import zio.UIO
 
 
-class ProductStatisticsService(repository: ProductStatisticsRepository) {
+case class ProductStatisticsService(repository: ProductStatisticsRepository) {
 
   def index(productRating: ProductRating): UIO[Unit] =
     repository.index(productRating)

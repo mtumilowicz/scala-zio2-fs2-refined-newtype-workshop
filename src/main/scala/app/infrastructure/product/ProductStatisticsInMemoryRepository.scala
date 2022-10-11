@@ -5,7 +5,7 @@ import app.domain.rating.ProductRating
 import app.domain.stats.{ProductStatistics, ProductStatisticsRepository}
 import zio.{Ref, UIO}
 
-class ProductStatisticsInMemoryRepository(ref: Ref[Map[ProductId, ProductStatistics]]) extends ProductStatisticsRepository {
+case class ProductStatisticsInMemoryRepository(ref: Ref[Map[ProductId, ProductStatistics]]) extends ProductStatisticsRepository {
 
   override def findTop(top: Int, ordering: Ordering[ProductStatistics]): UIO[List[ProductStatistics]] =
     ref.get.map(_.values.toList.sorted(ordering).takeRight(top))
