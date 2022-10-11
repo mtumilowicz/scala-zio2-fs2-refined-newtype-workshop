@@ -4,6 +4,7 @@
 * references
     * https://fs2.io
     * [Klarna Tech Talks: Compose your program flow with Stream - Fabio Labella](https://www.youtube.com/watch?v=x3GLwl1FxcA)
+    * [Zymposium - ZIO API Design Techniques](https://www.youtube.com/watch?v=48fpPffgnMo)
     * https://leanpub.com/pfp-scala
     * https://www.manning.com/books/get-programming-with-haskell
     * https://github.com/fthomas/refined

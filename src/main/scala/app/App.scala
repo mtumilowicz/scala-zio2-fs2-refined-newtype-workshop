@@ -10,18 +10,16 @@ object App extends ZIOAppDefault {
 
   val run = for {
     environment <- EnvironmentConfig.inMemory
-    args <- ZIO.service[ZIOAppArgs]
-    path = pathFromArgsOrDefault(args)
+    path <- pathFromArgsOrDefault
     result <- program(path).provideEnvironment(environment)
     _ <- Console.printLine(result.toString)
   } yield ExitCode.success
 
-  def program(path: Path): ZIO[AnalysisService, Throwable, ProductRatingAnalysisApiOutput] = for {
-    analysisService <- ZIO.service[AnalysisService]
-    result <- analysisService.calculate(path)
-  } yield result
+  def program(path: Path): ZIO[AnalysisService, Throwable, ProductRatingAnalysisApiOutput] =
+    ZIO.serviceWithZIO[AnalysisService](_.calculate(path))
 
-  private def pathFromArgsOrDefault(zioAppArgs: ZIOAppArgs): Path =
-    Path(zioAppArgs.getArgs.headOption.getOrElse("src/main/resources/file.csv"))
+  private def pathFromArgsOrDefault: ZIO[ZIOAppArgs, Nothing, Path] =
+    ZIO.serviceWith[ZIOAppArgs](_.getArgs.headOption.getOrElse("src/main/resources/file.csv"))
+      .map(Path(_))
 
 }
