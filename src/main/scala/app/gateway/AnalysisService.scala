@@ -10,7 +10,7 @@ import zio.interop.catz._
 import zio.{Task, UIO}
 
 case class AnalysisService(analysisService: ProductAnalysisService,
-                      ratingService: RatingService) {
+                           ratingService: RatingService) {
 
   def calculate(path: Path): Task[ProductRatingAnalysisApiOutput] = for {
     parsingSummary <- ratingService.findAll(path)

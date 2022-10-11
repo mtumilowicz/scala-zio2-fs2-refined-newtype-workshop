@@ -4,8 +4,6 @@ import app.domain.common.PositiveLong
 import app.domain.purchase.ProductId
 import app.domain.purchase.ProductId._
 
-import scala.math.Ordering
-
 object ProductStatisticsOrdering {
 
   private val byHowManyRated = Ordering.by[ProductStatistics, PositiveLong](_.statistics.howManyRated)

@@ -1,6 +1,8 @@
 [![Build Status](https://app.travis-ci.com/mtumilowicz/scala-zio2-fs2-refined-newtype-workshop.svg?branch=master)](https://app.travis-ci.com/mtumilowicz/scala-zio2-fs2-refined-newtype-workshop)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 # scala-zio2-fs2-refined-newtype-workshop
+
 * references
     * https://fs2.io
     * [Klarna Tech Talks: Compose your program flow with Stream - Fabio Labella](https://www.youtube.com/watch?v=x3GLwl1FxcA)
@@ -45,13 +47,14 @@
     }
     ```
 * effectful streams need to be compiled to the effect
-  * `compile` is just a namespace for methods
-    * `fold` is accessible on the stream itself, but return a stream - not an effect
-    * drain: IO[Unit] // remove all elements from the stream
-        * similar to: `fold((), (acc, o) => acc)`
-        * motivation for the program is to only execute their effects
-            * outputs are meaningless
-        * vs directly on the stream: Stream.sleep(1.seconds).drain // Stream[IO, Nothing] - stream doesn't emit anything
+    * `compile` is just a namespace for methods
+        * `fold` is accessible on the stream itself, but return a stream - not an effect
+        * drain: IO[Unit] // remove all elements from the stream
+            * similar to: `fold((), (acc, o) => acc)`
+            * motivation for the program is to only execute their effects
+                * outputs are meaningless
+            * vs directly on the stream: Stream.sleep(1.seconds).drain // Stream[IO, Nothing] - stream doesn't emit
+              anything
 * errors
     * stream can raise errors
         * explicitly: `Stream.raiseError`
@@ -69,9 +72,9 @@
         * limitations and performance issues
             * https://docs.scala-lang.org/overviews/core/value-classes.html
             * A value class is actually instantiated when:
-              * a value class is treated as another type.
-              * a value class is assigned to an array.
-              * doing runtime type tests, such as pattern matching.
+                * a value class is treated as another type.
+                * a value class is assigned to an array.
+                * doing runtime type tests, such as pattern matching.
     * problem with validation
         * suppose we want `Username` to be non-empty string
         * solution: make constructors private and only expose smart constructors
