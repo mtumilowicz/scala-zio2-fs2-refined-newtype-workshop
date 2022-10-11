@@ -6,11 +6,11 @@ import app.infrastructure.module.{ProductAnalysisModule, ProductStatisticsModule
 import eu.timepit.refined.auto._
 import zio.Scope
 import zio.test.Assertion._
-import zio.test.{TestEnvironment, ZIOSpecDefault, ZSpec, assert}
+import zio.test.{Spec, TestEnvironment, ZIOSpecDefault, assert}
 
 object ProductAnalysisServiceTest extends ZIOSpecDefault {
 
-  override def spec: ZSpec[TestEnvironment with Scope, Any] =
+  override def spec: Spec[TestEnvironment with Scope, Any] =
     suite("analyze product stats")(
       emptyDbTest,
       nonEmptyDbTest,

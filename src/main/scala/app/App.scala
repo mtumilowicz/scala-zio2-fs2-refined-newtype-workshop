@@ -23,7 +23,7 @@ object App extends ZIOAppDefault {
       RatingModule.serviceLayer
     )
 
-  def program(path: Path): ZIO[AnalysisService with ZIOAppArgs, Throwable, ProductRatingAnalysisApiOutput] =
+  def program(path: Path): ZIO[AnalysisService, Throwable, ProductRatingAnalysisApiOutput] =
     ZIO.serviceWithZIO[AnalysisService](_.calculate(path))
 
   private def pathFromArgsOrDefault: ZIO[ZIOAppArgs, Nothing, Path] =

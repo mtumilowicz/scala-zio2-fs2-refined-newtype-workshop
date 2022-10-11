@@ -5,23 +5,28 @@ import app.infrastructure.module._
 import fs2.io.file.{NoSuchFileException, Path}
 import zio.test.Assertion._
 import zio.test.{assert, _}
-import zio.{Scope, ULayer, ZIO, ZIOAppArgs, ZLayer}
 
-object CsvAnalysisTest extends ZIOSpec[AnalysisService] {
+object CsvAnalysisTest extends ZIOSpecDefault {
 
-  override def spec: ZSpec[AnalysisService with TestEnvironment with ZIOAppArgs with Scope, Any] =
+  override def spec: Spec[TestEnvironment, Throwable] =
     suite("The user can analyse the csv file")(
       nonExistingFileTest,
       emptyFileTest,
       nonEmptyFileTest
+    ).provideSome(
+      CsvAnalysisModule.serviceLayer,
+      ProductAnalysisModule.serviceLayer,
+      ProductStatisticsModule.service,
+      ProductStatisticsModule.inMemoryRepositoryLayer,
+      PurchaseModule.serviceLayer,
+      PurchaseModule.csvRepository,
+      RatingModule.serviceLayer
     )
 
   private val nonExistingFileTest = test("analyse is invoked on non-existing file") {
     val path = Path("src/test/resources/csv/nonexistingFile.csv")
     val program = App.program(path)
-    for {
-      result <- assertM(program.exit)(fails(isSubtype[NoSuchFileException](anything)))
-    } yield result
+    assertZIO(program.exit)(fails(isSubtype[NoSuchFileException](anything)))
   }
 
   private val emptyFileTest = test("analyse is invoked on an empty file") {
@@ -50,16 +55,5 @@ object CsvAnalysisTest extends ZIOSpec[AnalysisService] {
       assert(analysis.mostRatedProduct)(equalTo("wifi-projector-01"))
   }
 
-  override def layer: ULayer[AnalysisService] = ZLayer.fromZIO {
-    ZIO.service[AnalysisService]
-      .provide(
-        CsvAnalysisModule.serviceLayer,
-        ProductAnalysisModule.serviceLayer,
-        ProductStatisticsModule.service,
-        ProductStatisticsModule.inMemoryRepositoryLayer,
-        PurchaseModule.serviceLayer,
-        PurchaseModule.csvRepository,
-        RatingModule.serviceLayer
-      )
-  }
+
 }

@@ -8,11 +8,11 @@ import app.infrastructure.module.ProductStatisticsModule
 import eu.timepit.refined.auto._
 import zio.Scope
 import zio.test.Assertion.{equalTo, hasSize, isEmpty}
-import zio.test.{TestEnvironment, ZIOSpecDefault, ZSpec, assert}
+import zio.test.{Spec, TestEnvironment, ZIOSpecDefault, assert}
 
 object ProductStatisticsServiceTest extends ZIOSpecDefault {
 
-  override def spec: ZSpec[TestEnvironment with Scope, Any] =
+  override def spec: Spec[TestEnvironment with Scope, Any] =
     suite("Find top n entries given specific ordering")(
       emptyDbTest,
       singleEntryDbTest,

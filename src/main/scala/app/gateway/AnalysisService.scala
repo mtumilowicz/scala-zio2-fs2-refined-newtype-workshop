@@ -7,7 +7,7 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.data.ValidatedNec
 import fs2.io.file.Path
 import zio.interop.catz._
-import zio.{Task, UIO}
+import zio.{Task, UIO, ZIO}
 
 case class AnalysisService(analysisService: ProductAnalysisService,
                            ratingService: RatingService) {
@@ -26,7 +26,7 @@ case class AnalysisService(analysisService: ProductAnalysisService,
   private def addToStatistics(validatedPurchase: ValidatedNec[String, ProductRating]): UIO[ValidatedNec[String, ProductRating]] =
     validatedPurchase match {
       case Valid(a) =>
-        analysisService.addToStatistics(a) *> UIO.succeed(validatedPurchase)
-      case Invalid(_) => UIO.succeed(validatedPurchase)
+        analysisService.addToStatistics(a) *> ZIO.succeed(validatedPurchase)
+      case Invalid(_) => ZIO.succeed(validatedPurchase)
     }
 }
