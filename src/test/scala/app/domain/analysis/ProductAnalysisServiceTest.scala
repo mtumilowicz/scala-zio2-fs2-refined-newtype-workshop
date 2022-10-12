@@ -1,25 +1,30 @@
 package app.domain.analysis
 
 import app.domain.purchase.ProductId
+import app.domain.stats.ProductStatisticsService
 import app.domain.utils.ProductUtils
-import app.infrastructure.module.{ProductAnalysisModule, ProductStatisticsModule}
+import app.infrastructure.module.{CsvAnalysisModule, ProductAnalysisModule, ProductStatisticsModule, PurchaseModule, RatingModule}
 import eu.timepit.refined.auto._
-import zio.Scope
+import zio.{Scope, ZIO}
 import zio.test.Assertion._
 import zio.test.{Spec, TestEnvironment, ZIOSpecDefault, assert}
 
 object ProductAnalysisServiceTest extends ZIOSpecDefault {
 
-  override def spec: Spec[TestEnvironment with Scope, Any] =
+  override def spec: Spec[Any, Any] =
     suite("analyze product stats")(
       emptyDbTest,
       nonEmptyDbTest,
+    ).provide(
+      ProductAnalysisModule.service,
+      ProductStatisticsModule.service,
+      ProductStatisticsModule.inMemoryRepository,
     )
 
   private val emptyDbTest = test("analyzing empty db should result in empty object") {
     for {
       //    Given("create empty")
-      service <- ProductAnalysisModule.inMemoryService
+      service <- ZIO.service[ProductAnalysisService]
 
       //    When("analyzing empty db")
       result <- service.analyse()
@@ -34,8 +39,8 @@ object ProductAnalysisServiceTest extends ZIOSpecDefault {
   private val nonEmptyDbTest = test("analysing full-packed db should result in correct object") {
     for {
       // Given("create empty")
-      statsService <- ProductStatisticsModule.inMemoryService
-      service = ProductAnalysisModule.service(statsService)
+      statsService <- ZIO.service[ProductStatisticsService]
+      service <- ZIO.service[ProductAnalysisService]
 
       // And("add ratings with 5 x 1, avg = 1")
       _ <- statsService.index(ProductUtils.createProductRating("product1-01", 1L))

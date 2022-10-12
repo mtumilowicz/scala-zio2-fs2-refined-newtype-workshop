@@ -8,19 +8,19 @@ import zio.test.{assert, _}
 
 object CsvAnalysisTest extends ZIOSpecDefault {
 
-  override def spec: Spec[TestEnvironment, Throwable] =
+  override def spec: Spec[Any, Throwable] =
     suite("The user can analyse the csv file")(
       nonExistingFileTest,
       emptyFileTest,
       nonEmptyFileTest
     ).provideSome(
-      CsvAnalysisModule.serviceLayer,
-      ProductAnalysisModule.serviceLayer,
+      CsvAnalysisModule.service,
+      ProductAnalysisModule.service,
       ProductStatisticsModule.service,
-      ProductStatisticsModule.inMemoryRepositoryLayer,
-      PurchaseModule.serviceLayer,
+      ProductStatisticsModule.inMemoryRepository,
+      PurchaseModule.service,
       PurchaseModule.csvRepository,
-      RatingModule.serviceLayer
+      RatingModule.service
     )
 
   private val nonExistingFileTest = test("analyse is invoked on non-existing file") {

@@ -14,13 +14,13 @@ object App extends ZIOAppDefault {
     _ <- Console.printLine(result)
   } yield ())
     .provideSome(
-      CsvAnalysisModule.serviceLayer,
-      ProductAnalysisModule.serviceLayer,
+      CsvAnalysisModule.service,
+      ProductAnalysisModule.service,
       ProductStatisticsModule.service,
-      ProductStatisticsModule.inMemoryRepositoryLayer,
-      PurchaseModule.serviceLayer,
+      ProductStatisticsModule.inMemoryRepository,
+      PurchaseModule.service,
       PurchaseModule.csvRepository,
-      RatingModule.serviceLayer
+      RatingModule.service
     )
 
   def program(path: Path): ZIO[AnalysisService, Throwable, ProductRatingAnalysisApiOutput] =

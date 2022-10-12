@@ -6,10 +6,6 @@ import zio.{URLayer, ZLayer}
 
 object RatingModule {
 
-  def serviceLayer: URLayer[PurchaseService, RatingService] = ZLayer.fromFunction(RatingService.apply _)
-
-
-  def inMemoryService =
-    RatingService(PurchaseModule.inMemoryService)
+  def service: URLayer[PurchaseService, RatingService] = ZLayer.fromFunction(RatingService.apply _)
 
 }
