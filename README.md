@@ -68,7 +68,12 @@
 * streams move chunks
     * chunk is immutable, finite sequence that supports efficient index-based random access of elements
     * why to not use `Vector` instead?
-        * `Chunk` heap size is similar to `Array`, `Vector` is much bigger (`Vector[Byte]` heap size > 4x `Array[Byte]` heap size)
+        * `Chunk[Byte]` heap size is similar to `Array[Byte]`, `Vector[Byte]` is much bigger
+            * `Vector[Byte]` heap size > 4x `Array[Byte]` heap size
+            * cost of boxing/unboxing is too high to use vector
+        * and we want to avoid unnecessary copying
+            * example: io file/sockets - reuse existing buffers
+        * `Chunk` is just a thin wrapper on top of `Array`
 
 ## newtype
 * value classes context
