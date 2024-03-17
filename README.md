@@ -73,6 +73,12 @@
             * cost of boxing/unboxing is too high to use vector
         * and we want to avoid unnecessary copying
             * example: io file/sockets - reuse existing buffers
+                ```
+                def byteBuffer(buffer: ByteBuffer): Chunk[Byte] = new:
+                    private val b = buffer.duplicate().asReadOnlyBuffer // readonly view
+                    def size = b.remaining
+                    def apply(idx: Int) = b.get(b.position + idx)
+                ```
         * `Chunk` is just a thin wrapper on top of `Array`
 
 ## newtype
