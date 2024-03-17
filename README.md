@@ -12,6 +12,7 @@
     * https://github.com/fthomas/refined
     * https://github.com/estatico/scala-newtype
     * https://wiki.haskell.org/Newtype
+    * [Michael Pilquist - fs2.Chunk](https://www.youtube.com/watch?v=wOybldcyMLs)
 
 ## preface
 * goals of this workshop
@@ -64,6 +65,10 @@
 * `evalMap` vs `map`
     * evalMap = alias for flatMap(o => Stream.eval(f(o)))
     * map - should not perform side effects
+* streams move chunks
+    * chunk is immutable, finite sequence that supports efficient index-based random access of elements
+    * why to not use `Vector` instead?
+        * `Chunk` heap size is similar to `Array`, `Vector` is much bigger (`Vector[Byte]` heap size > 4x `Array[Byte]` heap size)
 
 ## newtype
 * value classes context
